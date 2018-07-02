@@ -1,0 +1,14 @@
+\newpage
+\section*{Aufgabe 3: }
+Sei $f$ die in der Aufgabe beschriebene implizite Fläche und seien $p_1, \cdots, p_n \in \mathbb{R}^3$ die Punkte der zugrunde liegenden Punktwolke mit den Normalen $n_1, \cdots, n_n \in \mathbb{R}^3$.\\
+
+Dann gilt:
+\begin{align*}
+  f(x) = \min_{D \in \mathbb{R}} \hspace{5pt} \sum_{i=1}^n \hspace{5pt} &\theta(\lVert p_i - x \rVert) \cdot (D - 0)^2 \\
+  + &\theta(\lVert p_i + \alpha n_i - x \rVert) \cdot (D - \alpha)^2 \\
+  + &\theta(\lVert p_i - \alpha n_i - x \rVert) \cdot (D + \alpha)^2
+\end{align*}
+
+Wir betrachten nun die drei einzelnen Summanden in der großen Summe. Mittels leichter Analysis kann man zeigen, dass der erste Summand minimiert wird wenn $D = 0$. Zugleich wird der Term monoton größer wenn man den Abstand zwischen $D$ und dem Minimum erhöht. Gleiches gilt für den zweiten und dritten Term, nur befindet sich dort das Minimum bei $D = \alpha$ bzw. $D = -\alpha$.\\
+
+Aufgrund der Monotonie, gilt $f(x) \in [-\alpha, \alpha]$, denn wenn man ein $D$ außerhalb dieses Bereichs wählen würde, könnte man den zu minimierenden Term immer verkleinern, indem man $D$ auf das eben genannte Intervall projiziert.

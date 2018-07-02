@@ -1,0 +1,127 @@
+\documentclass[a4paper, 11pt]{article}
+
+%%% Zeichenkodierung, Rechtschreibung und Umlaute
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage[T1]{fontenc}
+
+%%% Mathematische Symbole, Gleichungen
+\usepackage[fleqn]{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{bm}
+%\usepackage{colonequals} % Zusätzliche Relationssymbole
+
+%%% Tabellen
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multicol}
+
+%%% Seitenformat und -ränder
+%%% -Alternative 1-
+\usepackage{geometry}
+\geometry{a4paper, top=25mm, bottom=20mm, left=20mm, right=20mm}
+%%% -Alternative 2-
+%\usepackage[headheight=110pt]{geometry}
+%\geometry{a4paper,left=30mm,right=30mm, top=35mm, bottom=30mm}
+
+%%% Seitenstile (Kopf- und Fußzeile)
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+%%% Sonstiges
+\usepackage{caption} % Untertitel von Grafiken/Tabellen manipulieren
+\usepackage{enumerate} % Aufzählungszeichen ändern
+\usepackage{graphicx} % Standarderweiterung für Bilddateien
+\usepackage{hyperref} % Hyperlinks
+\usepackage{lastpage} % Berechnung der Seitenzahl
+%\usepackage{polynom} % Polynomdivision
+\usepackage{setspace} % Zeilenabstand
+%\usepackage{textgreek} % griechische Symbole
+\usepackage{tikz} % Umfassendes Tool, um Grafiken zu erstellen
+\usepackage{verbatim} % Schreibmaschinen-Stil (für Code-Ausschnitte)
+\usepackage{float}
+
+%%% Eingaben (z.B. für das Deckblatt)
+\newcommand{\module}{Embedded System Design -- Protokoll}
+\newcommand{\semester}{Sommersemester 2018}
+\newcommand{\finishingdate}{29.06.2018}
+\newcommand{\titletext}{Video  Audio Streaming} %TODO: Nummer anpassen
+
+%%%-- Für das Deckblatt --
+\title{
+	~\\[4cm]
+	\textbf{
+		\module\\[0.25cm]
+		\normalsize \semester \\[1.5cm]
+		\Huge\titletext\\
+	}
+}
+
+\author{
+  \vspace{3.5cm}\\
+  \begin{tabular}{l}
+    \textbf{Gruppe 4:}\\\hline
+    Omid ... \\
+    Torsten Michael Schenk\\
+  \end{tabular}
+}
+
+\date{
+	\vfill
+	Abgabedatum: \finishingdate\\
+	\vspace{5mm}
+	Seitenanzahl: \pageref{LastPage}
+}
+
+%%% -- Kopf- und Fußzeile --
+%%% Kopfzeile linker Bereich
+\lhead[\leftmark]{\textbf{\module}}
+%%% Kopfzeile mittlerer Bereich
+\chead[\rightmark]{\rightmark{\titletext}}
+%%% Kopfzeile linker Bereich
+\rhead{\textbf{zum \finishingdate}}
+%%% Fußzeile
+\cfoot{\thepage  \ / \pageref{LastPage}}
+
+%%% Serifenfreie Fonts benutzen
+%\renewcommand{\familydefault}{\sfdefault}
+
+%%% Font
+\usepackage{charter}
+
+%%% Tiefe der Einrückung nach Absätzen
+\setlength{\parindent}{0pt}
+
+%%% Evtl. Änderungen des Typs einer Aufzählungsebene (z.B. zur Anpassung an das Aufgabenblatt)
+%\renewcommand{\labelenumi}{\alph{enumi})}
+%\renewcommand{\labelenumii}{(\roman{enumii})}
+%\renewcommand{\labelenumiii}{\arabic{enumiii}.}
+%\renewcommand{\labelenumii}{\textbf{-}}
+
+\begin{document}
+
+%%% Deckblatt
+\maketitle
+\thispagestyle{empty} % Keine Seitenzahl hier
+\newpage
+
+%%% Seitenzahl zurücksetzen
+\clearpage
+\setcounter{page}{1}
+
+%%% Zeilenabstand
+%\singlespacing
+\onehalfspacing
+%\doublespacing
+
+%%%-- Eigentlicher Inhalt --
+\input{aufgabe1}
+\input{aufgabe2}
+\input{aufgabe3}
+\input{aufgabe4}
+\input{aufgabe5}
+
+\end{document}
