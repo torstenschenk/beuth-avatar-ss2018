@@ -1,0 +1,94 @@
+﻿
+Lösung
+RPi / gstreamer / H.264 => RTPEndpoint => WebRTCEndpoint => WebRTC client
+
+Objective:
+ achieve a one2many pipeline, "Presenter" is a Raspberry Pi sending an RTC stream using gstreamer instead of another WebRTC peer.
+
+Status and issue:
+	The pipeline is effectively working and the WebRTC clients receive the video stream 	from the Raspberry Pi. However, the WebRTC streams are extremely low quality 	(jumping from 30 to 60 kbits only acording to chrome://webrtc-internals). 
+
+Approach
+	RPi / gstreamer / H264 --> RTCEndpoint --> (many) WebRTCEndpoint(s) --> 	(many) WebRTC client(s)  
+
+
+
+I am using the node.js client for KMS, which is hosted on the same server as KMS.
+
+After reading a couple posts from the mailing list, I realized that I only had to arrange the negotiation between the RPi and KMS (via the node.js client) so that the RPi gets the port to which it should send the RTC stream. I set up that negotiation using a node.js script on the Raspberry Pi, which talks to the node.js KMS client over a websocket for the SDP negotiation. Now, once the negotiation is done and the RPi obtains the port, it launches the following shell script using exec:
+
+# Parameters
+width=640 # image width
+height=480 # image height
+bitrate=17000000 # bitrate
+fps=25 # fps
+ip=192.168.0.8    # IP address of the KMS server
+
+
+# Command | Note: the port is given as a parameter when calling the shell script ($1)
+raspivid -n -t 0 -w $width -h $height -fps $fps -b $bitrate -o - | gst-launch-1.0 -e fdsrc ! h264parse ! rtph264pay pt=96 config-interval=1 ! udpsink host=$gcs_ip port=$1
+
+
+In the meantime, the node.js KMS client has created a pipeline and the RTPEndpoint (exactly as in the one2many WebRTC example).
+
+Then, when a client connects, a new WebRTCEndpoint is created and connected to the presenter's RTPEndpoint using rtpEndpoint.connect(
+
+And it works! The client gets the stream from the RPi. Over my local network, there is no apparent latency (which is great :)). But the image quality is really really bad. 
+
+Looking at chrome://webrtc-internals, I can tell that I receive vp8 in my browser. Therefore, I imagine there is an h264 to vp8 transcoding happening somewhere in-between the RTPEndpoint and the (possibily several) WebRTCEndpoint(s). I don't have anything against that, except that it seems to cause a huge loss in quality...
+
+In order to make sure that I did not have any limitation in terms of bitrate/bandwidth from KMS, I added the following in my node.js KMS client: 	 
+
+1) Just after creating the rtpEndpoint:
+
+rtpEndpoint.setMinVideoRecvBan(0);
+rtpEndpoint.setMaxVideoRecvBan(0);
+rtpEndpoint.setMinVideoSendBan(0); // I know this is useless but still tried
+rtpEndpoint.setMaxVideoSendBan(0); // I know this is useless but still tried
+rtpEndpoint.setMinOutputBitrat(0);
+rtpEndpoint.setMaxOutputBitrat(0);
+
+
+2) Just after creating a WebRTCEndpoint:
+
+webRtcEndpoint.setMinVideoRecv(0); // I know this is useless but still tried
+webRtcEndpoint.setMaxVideoRecv(0); // I know this is useless but still tried
+webRtcEndpoint.setMinVideoSend(0);
+webRtcEndpoint.setMaxVideoSend(0);
+webRtcEndpoint.setMinOutputBit(0); // I know this is useless but still tried
+webRtcEndpoint.setMaxOutputBit(0); // I know this is useless but still tried
+
+
+I also checked the stream volumes over the network using nload: I see my RPi transmitting between 500kBit/s (still image) and 1200kBit/s (when something is moving). I see the KMS server receiving that bitrate over the network. But the KMS server then only sends 30kBit/s to 100kBit/s. This is confirmed by the chrome://webrtc-internals of my browser.
+
+Also, before you ask, I am pretty sure the issue does not come from my local network. For instance, if I change the Raspberry Pi Camera parameters to beef up the stream coming from the RPi, I easily reach 17MBit/s, that I see outgoing in the RPi and incoming on the KMS Server using nload. By the way, beefing up the stream from the Raspberry Pi does not have any noticeable effect on the WebRTC stream in the browser. Also, regarding the network, all the WebRTC examples I tried from the docs work perfectly fine.
+
+I think it's the first time I use a mailing list, which shows the depths of my despair ;). I went through the documentation and the present mailing list but did not find any solution. I really want to make it work and would be very grateful for your help! I must be doing something wrong but cannot figure out what!
+
+Please find attached the following files:
+
+- script_rpi.js: the script executed on the RPi using node. It is essentially a simplified version of the code executed in the browser by a WebRTC peer.
+- server.js: the script executed by the KMS client. The node.js KMS client and the KMS server are on the same machine (192.168.0.8).
+- webrtc-internals.png: a screenshot of the webrtc-internals of the browser receiving the poor quality stream.
+- stream-example.png: a screenshot of the stream illustrating the horrible quality I obtain.
+
+
+Steps:
+1) You install KMS in a Ubuntu 14.04 box and bridge with your device, so that the device generates the video stream and sends it to the KMS box. From that, you can transcode it to VP9 and distribute it as a WebRTC stream quite easily using kurento client APIs (which may be used from Node.js). The application making the transcoding will require an RtpEndpoint (receiving video form the device in RTP/H.264) connected to a WebRtcEndpoint (capable of sending the video stream through WebRTC). This option is quite simple to implement because it's the standard way of using KMS. However, you will need to generate the RTP/H.264 stream on the device and appropriate SDP for it (this can be done using standard GStreamer elements)
+
+
+EndPoint: 
+Endpoint that provides bidirectional content delivery capabilities with remote networked peers through RTP or SRTP protocol.
+An RtpEndpoint contains paired sink and source :rom:cls:`MediaPad` for audio and video.
+
+https://doc-kurento.readthedocs.io/en/6.7.1/_static/client-javadoc/org/kurento/client/RtpEndpoint.html
+
+
+GPS Treiber
+realtime 
+cputime
+good time
+
+monoton
+
+unterschiede get_time of date
