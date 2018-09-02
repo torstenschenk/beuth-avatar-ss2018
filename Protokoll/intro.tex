@@ -14,16 +14,111 @@ Beschreibung des Projektes...
 Beschreibung der Schritte zum erreichen des Projektes
 ...
 
+\section{ffmpeg, ffserver, ffplayer}
+
+\textbf{Linux / Raspian ffmpeg} %and pi\_jessie\_motion}
+
+\begin{enumerate}
+	\item remove (still needed?):\\
+	sudo apt-get remove libavcodec-extra-56 libavformat56 libavresample2 libavutil54
+	\item download ffmpeg precompiled armhf.deb:\\
+	wget https://github.com/ccrisan/motioneye/wiki/precompiled/ffmpeg\_3.1.1-1\_armhf.deb\\
+	sudo dpkg -i ffmpeg\_3.1.1-1\_armhf.deb
+	%\item install:\\
+	%sudo apt-get install curl libssl-dev libcurl4-openssl-dev libjpeg-dev libx264-142     
+	%libavcodec56 libavformat56 libmysqlclient18 libswscale3 libpq5
+	%\item install motion:\\
+	%wget https://github.com/Motion-Project/motion/releases/download/release-4.0.1/pi\_jessie\_motion\_4.0.1-1\_armhf.deb\\
+	%sudo dpkg -i pi\_jessie\_motion\_4.0.1-1\_armhf.deb
+\end{enumerate}
+
+
+\section{Motion Installation \& Test}
+
+Motion ist ein Programm, das in der Lage ist zu erkennen, wenn ein signifikanter Teil des Kamerabildes sich verändert. Es kann also 
+Bewegung erkennen und einen Warnton übertragen. Kamera streaming 
+Service welches verwendet werden kann, um den Videostream 
+einer Webcam an eine IP Adresse zu leiten. Motion kann mit 
+vielen Geräten verwendet werden. Unterstützt werden:
+\begin{itemize}
+\item V4L2 Webcams (closed source)
+\item Video Frame Grabber
+\item Network Kameras via HTTP, RTSP, RTMP
+\item PI Kameramodul
+\item Webcam
+\end{itemize}
+
 Video Stream zur IP Adresse des Devices (Raspi) im es im lokalen 
-Netzwerk um Browser anzuzeigen....
+Netzwerk um Browser anzuzeigen....TODO
 
 OP: Raspian\\
-Setup: Streaming server motion
+Setup: Streaming server motion\\
 
 Anleitung nach Tutorial mit Anpassungen:\\
-https://pimylifeup.com/raspberry-pi-webcam-server/
+https://pimylifeup.com/raspberry-pi-webcam-server/\\
 
-test raspi video codex and sound from avi video
+\textbf{Jessie and Strech are two debian major release}\\
+Debian 9 (stretch) — current stable release\\
+Debian 8 (jessie) — obsolete stable release\\
 
+\textbf{Raspian pi\_streach\_motion}
+
+\begin{enumerate}
+	\item install:\\
+	sudo apt-get install libmariadbclient18 libpq5 libavcodec57  libavformat57 libavutil55 libswscale4\\
+	einige Pakete sind outdated und müssen durch aktuelle ersetzt werden:\\
+	sudo apt install libx264-148\\
+	libavcodec57\\
+	libavformat57\\
+	libmariadbclient-dev-compat\\
+	default-libmysqlclient-dev\\
+	libswscale
+
+	\item download motion stretch deb\\
+	sudo wget https://github.com/Motion-Project/motion/releases/download/release-4.0.1/pi\_stretch\_motion\_4.0.1-1\_armhf.deb\\
+	sudo dpkg -i pi\_stretch\_motion\_4.0.1-1\_armhf.deb\\
+
+	Configuring Motion:\\
+	sudo vim /etc/motion/motion.conf\\
+	daemon on\\
+	stream\_localhost off\\
+	if problems with freezing if motion occures\\
+	output\_pictures off\\
+	ffmpeg\_output\_movies off\\
+	optional\\
+	stream\_maxrate 100\\
+	framerate 100\\
+	width 640\\
+	height 480
+
+	\item setup daemon\\
+	sudo vim /etc/default/motion\\
+	start\_motion\_daemon=yes
+\end{enumerate}
+
+start stop motion and streaming by:\\
+sudo service motion start\\
+sudo service motion stop\\
+
+check browser in local network, xxx ip adress of raspi (ip addr show):\\
+192.168.1.xxx:8081
+
+How to test if video and avi works at all:\\
+Test raspi video codex and sound from avi video\\
 omxplayer -p -o local dolbycanyon.avi\\
 -o local = headphone jack
+
+\section{Audio}
+Um Audio auf den Headphone Jack umzuleiten (default ist HDMI) zuerst pulseaudio deinstallieren.\\
+sudo apt remove pulseaudio\\
+
+Dann die richtige Zuordnung setzen, 1 steht für local audio jack:\\
+amixer cset numid=3 1
+amixer cset numid=2 1\\
+oder \\
+amixer -c 0 cset numid=3 1\\
+
+Audio Tests:\\
+aplay /usr/share/scratch/Media/Sounds/Vocals/Singer1.wav\\
+Facebook Video Call: OK (schlechter Sound)\\
+Musikvidoes auf YoutTube: OK (guter Sound)\\
