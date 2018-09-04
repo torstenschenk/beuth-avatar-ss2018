@@ -1,0 +1,22 @@
+# mp4 rtp
+ffserver -d -f ffserver_mp4.conf 
+
+ffmpeg -ar 8000 -f alsa -i hw:0 -acodec mp2 -b:a 128k http://localhost:8090/feed1.ffm
+
+#sound ???
+ffserver -d -f ffserver_mp4_alsa.conf
+ffmpeg -r 25 -s 352x288 -f video4linux2 -i /dev/video1 -fflags nobuffer -f alsa -i pulse -an http://localhost:8090/feed1.ffm
+
+mplayer rtsp://localhost:5554/test.mpeg4
+ffplay rtsp://localhost:5554/test.mpeg4
+ffplay -probesize 32 -sync ext rtsp://localhost:5554/test.mpeg4
+
+##############################################################################
+# via webm
+ffserver -f ffserver.conf 
+
+ffmpeg -re -f video4linux2 -i /dev/video1 -fflags nobuffer -f alsa -i pulse -an http://localhost:8090/yolandi1.ffm
+
+mplayer http://localhost:8090/test.webm
+ffplay -probesize 32 -sync ext http://localhost:8090/test.webm
+#############################################################################

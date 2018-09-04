@@ -1,2 +1,15 @@
 \newpage
-\section*{no number here: * }
+\section{Rapsi Touchscreen Display}
+
+\# Zeige Namen aller angeschlossenen Displays\\
+xrandr -q\\
+
+\# 180 Grad drehen\\
+xrandr --output HDMI-1 --rotate inverted\\
+
+\# Touchscreen muss auch rotiert werden\\
+\# bitte einfügen in /boot/config.txt:\\
+\# rote touchscreen (display rotated via xrandr startup script)\\
+lcd\_rotate=2\\
+
+
