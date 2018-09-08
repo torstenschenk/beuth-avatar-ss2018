@@ -30,4 +30,8 @@ Bauernöppel:
 https://github.com/FrankBau/raspi-repo-manifest/wiki/RTSP
 
 	
+############################################
+  record mp4 video with sound form webcam
+############################################
+ ffmpeg -y -f video4linux2 -s 320x240 -i /dev/video0 -f alsa -i pulse -ac 2 -strict experimental ffmpegFile.mp4
 

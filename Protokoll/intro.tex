@@ -30,6 +30,12 @@ Beschreibung der Schritte zum erreichen des Projektes
 	%\item install motion:\\
 	%wget https://github.com/Motion-Project/motion/releases/download/release-4.0.1/pi\_jessie\_motion\_4.0.1-1\_armhf.deb\\
 	%sudo dpkg -i pi\_jessie\_motion\_4.0.1-1\_armhf.deb
+	
+\textbf{Aufzeichnen von mp4 mit Audio}\\
+ffmpeg -y -f video4linux2 -s 320x240 -i /dev/video0 -f alsa -i pulse -ac 2 -strict experimental ffmpegFile.mp4\\
+Abspielen mit mplayer, ffplay oder vlc möglich.
+	
+	
 \end{enumerate}
 
 
@@ -122,3 +128,18 @@ Audio Tests:\\
 aplay /usr/share/scratch/Media/Sounds/Vocals/Singer1.wav\\
 Facebook Video Call: OK (schlechter Sound)\\
 Musikvidoes auf YoutTube: OK (guter Sound)\\
+
+Kommandozeile, um alle Audiogeräte anzuzeigen:\\
+pacmd list-sources
+
+Listet alle *.ogg Audiodateien auf dem ubuntu Rechner auf:\\
+pacmd list-samples\\
+Lautsprechertest (abspielen):\\
+mplayer /usr/share/sounds/ubuntu/stereo/button-pressed.ogg 
+
+
+\section{RTMP versus WebRTC}
+
+RTMP/RTSP are better for livestreaming in ‘live’ meaning. We can easily reduce the latency of RTMP or RTSP to around 1 second with just some simple setup and a good connection to the server, many streaming apps are using RTMP protocol nowaday. The only and biggest weakness of RTMP is it requires Flash and is not easily to be integrated into a website\\
+
+WebRTC is something called the future for livestreaming, it is a peer-to-peer protocol which can reach ‘realtime’ latency for livestreaming(under 1 second). The weakness of WebRTC is it is hard when we need scaling, currently it is just approriate livestreaming in online meeting which require a small value of peers. There are many solution to overcome this, such as a hybrid solution combining WebRTC for input and RTMP/HLS/DASH for output.

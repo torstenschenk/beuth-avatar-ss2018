@@ -1,0 +1,25 @@
+service mistserver status
+service mistserver start
+service mistserver stop
+
+
+Stream from ffmpeg
+
+# rtsp (5 sec to localhost, audio not working)
+ffmpeg -f video4linux2 -i /dev/video1 -s 300x200 -vcodec h264 -pix_fmt yuv420p -g 300 -f rtsp -muxdelay 0.1 rtsp://localhost:5554/test
+# visu 
+file:///home/ts/Documents/Code/beuth-avatar-ss2018/website/webmp4/index.html
+# mistserver
+http://localhost:4242/#&http://localhost:4242/api@Preview&test
+
+
+#rtmp (15sec to localhost !!!, audio not working)
+ffmpeg -f video4linux2 -i /dev/video1 -s 200x150 -vcodec h264  -pix_fmt yuv420p -f flv rtmp://localhost/live/test
+
+# mistserver web server
+# make sure mistserver service is started!
+http://85.214.211.169:4242/#yolandi&http://85.214.211.169:4242/api@Server%20Stats&
+
+# new try
+ffmpeg -y -f video4linux2 -s 320x240 -i /dev/video0 -f alsa -i pulse -ac 2 -strict experimental -f rtsp -muxdelay 0.1 rtsp://localhost:554/test
+
