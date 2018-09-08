@@ -1,6 +1,6 @@
 nmap -sn 192.168.1.0/24
 ssh ts@192.168.1.54
-pwd: pi4 standard
+pwd ts raspi: raspi123
 
 transfere data to raspi:
 sftp ts@192.168.1.54
