@@ -1,0 +1,35 @@
+
+------------------
+  Server via ssh
+------------------
+ssh -X root@85.214.211.169
+or
+ssh -X root@85.214.211.169 -L 5901:localhost:5901
+pwd: 
+nU2zuA65*
+
+------------------------------------------------------------------------
+  setup remote desktop connection via tightvncserver / xtightvncviewer
+------------------------------------------------------------------------
+sudo apt install tightvncserver
+sudo apt install xtightvncviewer
+
+-----------------------
+  xtightvncviewer pwd
+-----------------------
+pwd:
+nU2vnc12
+-----------------------
+
+---------
+  Login
+---------
+ssh -X root@85.214.211.169 -L 5901:localhost:5901
+# ssh ... see above
+vncserver :1
+echo "$DISPLAY"
+# in server ssh console:
+xtightvncviewer 127.0.0.1:1
+# vnc pwd, see above
+
+

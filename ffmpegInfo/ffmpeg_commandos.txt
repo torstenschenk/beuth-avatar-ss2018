@@ -20,3 +20,14 @@ ffmpeg -re -f video4linux2 -i /dev/video1 -fflags nobuffer -f alsa -i pulse -an 
 mplayer http://localhost:8090/test.webm
 ffplay -probesize 32 -sync ext http://localhost:8090/test.webm
 #############################################################################
+
+
+Install gst-rtsp-server1.2:
+sudo apt install gir1.2-gst-rtsp-server-1.0
+https://launchpad.net/ubuntu/+source/gst-rtsp-server1.0
+
+Bauernöppel:
+https://github.com/FrankBau/raspi-repo-manifest/wiki/RTSP
+
+	
+
