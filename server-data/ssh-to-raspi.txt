@@ -5,4 +5,4 @@ pwd ts raspi: raspi123
 transfere data to raspi:
 sftp ts@192.168.1.54
 
-0
+000
