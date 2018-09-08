@@ -1,3 +1,6 @@
+// compile
+// gcc playback-tutorial-6.c -o playback-tutorial-6 `pkg-config --cflags --libs gstreamer-1.0`
+
 #include <gst/gst.h>
 
 /* playbin flags */
