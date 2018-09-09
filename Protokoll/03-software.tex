@@ -1,20 +1,26 @@
-\section{Projektbeschreibung}
+\newpage
+\section{Software}
 
-Beschreibung des Projektes...
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Raspberry Touchscreen Anzeige per Software Drehen}
+Wenn das Raspberry 7\grqq{} Display inds Gehäuse eingebau wird ist die 
+Visualisierung des Desktops 180 Grad verdreht. Es müssen Bildschirmanzeige 
+und Toucherkennung gedreht werden. Softwaretechnisch sind dies zwei verschiedene 
+Dinge.
 
+\# Zeige Namen aller angeschlossenen Displays\\
+xrandr -q\\
 
-\begin{minipage}{\textwidth}
-    \begin{center}
-        Caption for image
-        \includegraphics[scale=0.4]{img/schemaproj.png} 
-    \end{center}
-\end{minipage}
+\# 180 Grad drehen\\
+xrandr --output HDMI-1 --rotate inverted\\
 
+\# Touchscreen muss auch rotiert werden\\
+\# bitte einfügen in /boot/config.txt:\\
+\# rote touchscreen (display rotated via xrandr startup script)\\
+lcd\_rotate=2\\
 
-Beschreibung der Schritte zum erreichen des Projektes
-...
-
-\section{ffmpeg, ffserver, ffplay}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{ffmpeg, ffserver, ffplay}
 
 \textbf{Linux / Raspian ffmpeg} %and pi\_jessie\_motion}
 
@@ -34,12 +40,11 @@ Beschreibung der Schritte zum erreichen des Projektes
 \textbf{Aufzeichnen von mp4 mit Audio}\\
 ffmpeg -y -f video4linux2 -s 320x240 -i /dev/video0 -f alsa -i pulse -ac 2 -strict experimental ffmpegFile.mp4\\
 Abspielen mit mplayer, ffplay oder vlc möglich.
-	
-	
+
 \end{enumerate}
 
-
-\section{Motion Installation \& Test}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Motion Installation \& Test}
 
 Motion ist ein Programm, das in der Lage ist zu erkennen, wenn ein signifikanter Teil des Kamerabildes sich verändert. Es kann also 
 Bewegung erkennen und einen Warnton übertragen. Kamera streaming 
@@ -114,32 +119,23 @@ Test raspi video codex and sound from avi video\\
 omxplayer -p -o local dolbycanyon.avi\\
 -o local = headphone jack
 
-\section{Audio}
-Um Audio auf den Headphone Jack umzuleiten (default ist HDMI) zuerst pulseaudio deinstallieren.\\
-sudo apt remove pulseaudio\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{gstreamer}
 
-Dann die richtige Zuordnung setzen, 1 steht für local audio jack:\\
-amixer cset numid=3 1
-amixer cset numid=2 1\\
-oder \\
-amixer -c 0 cset numid=3 1\\
+Wenn Fehler beim Compilieren eines gstream Testprogramms auftreten, z.B.
+\begin{verbatim}
+Package gstreamer-1.0 was not found in the pkg-config search path.
+Perhaps you should add the directory containing `gstreamer-1.0.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'gstreamer-1.0' found
+playback-tutorial-6.c:1:10: fatal error: gst/gst.h: No such file or directory
+\end{verbatim}
 
-Audio Tests:\\
-aplay /usr/share/scratch/Media/Sounds/Vocals/Singer1.wav\\
-Facebook Video Call: OK (schlechter Sound)\\
-Musikvidoes auf YoutTube: OK (guter Sound)\\
+gstreamer-1.0 ist der folgenden lib enthalten:\\
+sudo apt install libgstreamer1.0-dev\\
 
-Kommandozeile, um alle Audiogeräte anzuzeigen:\\
-pacmd list-sources
+\textbf{Beispiel Programme gstreamer kompilieren}
+gcc playback-tutorial-6.c -o playback-tutorial-6 `pkg-config --cflags --libs gstreamer-1.0`
 
-Listet alle *.ogg Audiodateien auf dem ubuntu Rechner auf:\\
-pacmd list-samples\\
-Lautsprechertest (abspielen):\\
-mplayer /usr/share/sounds/ubuntu/stereo/button-pressed.ogg 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-\section{RTMP versus WebRTC}
-
-RTMP/RTSP are better for livestreaming in ‘live’ meaning. We can easily reduce the latency of RTMP or RTSP to around 1 second with just some simple setup and a good connection to the server, many streaming apps are using RTMP protocol nowaday. The only and biggest weakness of RTMP is it requires Flash and is not easily to be integrated into a website\\
-
-WebRTC is something called the future for livestreaming, it is a peer-to-peer protocol which can reach ‘realtime’ latency for livestreaming(under 1 second). The weakness of WebRTC is it is hard when we need scaling, currently it is just approriate livestreaming in online meeting which require a small value of peers. There are many solution to overcome this, such as a hybrid solution combining WebRTC for input and RTMP/HLS/DASH for output.

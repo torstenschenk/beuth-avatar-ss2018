@@ -1,0 +1,51 @@
+\newpage
+\section{Hardware}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Strato Web Server}
+\textbf{Login via ssh}\\
+ssh -X root@85.214.211.169\\
+ssh -X root@85.214.211.169 -L 5901:localhost:5901\\
+pwd: xxxxxxxxxx (pwd vom Provider)
+
+\textbf{Remote Desktop}\\
+tightvncserver: server\\
+xtightvncviewer: viewer\\
+sudo apt install tightvncserver xtightvncviewer\\
+\# set xtightvnciewer pwd\\
+
+\textbf{Full Login}\\
+ssh -X root@85.214.211.169 -L 5901:localhost:5901\\
+ssh Passwort eingeben\\
+\# Start vncserver\\
+vncserver :1\\
+echo \grqq{}\$DISPLAY\grqq{}\\
+\# in server ssh console\\
+xtightvncviewer 127.0.0.1:1\\
+vnc Passwort eingeben\\
+\# X Fenster sollte sich öffnen
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Audio Lautsprecher}
+Um Audio auf den Headphone Jack umzuleiten (default ist HDMI) zuerst pulseaudio deinstallieren.\\
+sudo apt remove pulseaudio\\
+
+Dann die richtige Zuordnung setzen, 1 steht für local audio jack:\\
+amixer cset numid=3 1
+amixer cset numid=2 1\\
+oder \\
+amixer -c 0 cset numid=3 1\\
+
+Audio Tests:\\
+aplay /usr/share/scratch/Media/Sounds/Vocals/Singer1.wav\\
+Facebook Video Call: OK (schlechter Sound)\\
+Musikvidoes auf YoutTube: OK (guter Sound)\\
+
+Kommandozeile, um alle Audiogeräte anzuzeigen:\\
+pacmd list-sources
+
+Listet alle *.ogg Audiodateien auf dem ubuntu Rechner auf:\\
+pacmd list-samples\\
+Lautsprechertest (abspielen):\\
+mplayer /usr/share/sounds/ubuntu/stereo/button-pressed.ogg 
+

@@ -45,10 +45,12 @@
 \usepackage{float}
 
 %%% Eingaben (z.B. für das Deckblatt)
-\newcommand{\module}{Embedded System Design}
+\newcommand{\moduleabrv}{EDS}
+\newcommand{\module}{Embedded System Design Protokoll}
 \newcommand{\semester}{Beuth Hochschule - Sommersemester 2018}
 \newcommand{\finishingdate}{15.09.2018}
-\newcommand{\titletext}{Video  Audio Streaming} %TODO: Nummer anpassen
+\newcommand{\titletextabrv}{       A/V Streaming}
+\newcommand{\titletext}{Audio Video Streaming}
 
 %%%-- Für das Deckblatt --
 \title{
@@ -65,7 +67,7 @@
   \begin{tabular}{l}
     \textbf{Gruppe 15:}\\\hline
     Omid Rahimian Mashhadi \\
-    Torsten Michael Schenk\\
+    Torsten Michael Schenk Mat.Nr.: 838995\\
   \end{tabular}
 }
 
@@ -78,11 +80,11 @@
 
 %%% -- Kopf- und Fußzeile --
 %%% Kopfzeile linker Bereich
-\lhead[\leftmark]{\textbf{\module}}
+\lhead[\leftmark]{\textbf{\moduleabrv}}
 %%% Kopfzeile mittlerer Bereich
-\chead[\rightmark]{\rightmark{\titletext}}
+\rhead[\rightmark]{\rightmark{\titletextabrv}}
 %%% Kopfzeile linker Bereich
-\rhead{\textbf{zum \finishingdate}}
+%%\rhead{\textbf{zum \finishingdate}}
 %%% Fußzeile
 \cfoot{\thepage  \ / \pageref{LastPage}}
 
@@ -108,12 +110,17 @@
 \thispagestyle{empty} % Keine Seitenzahl hier
 
 \newpage
-\tableofcontents
+%\renewcommand\contentsname{Inhalt}
+%\tableofcontents
+    {\pagestyle{plain}
+    \tableofcontents
+    \cleardoublepage
+    }
 
-\newpage
+%\newpage
 %%% Seitenzahl zurücksetzen
-\clearpage
-\setcounter{page}{1}
+%\clearpage
+%\setcounter{page}{1}
 
 %%% Zeilenabstand
 %\singlespacing
@@ -121,10 +128,11 @@
 %\doublespacing
 
 %%%-- Eigentlicher Inhalt --
-\input{intro}
-\input{aufgabe2}
-\input{aufgabe3}
-\input{aufgabe4}
-\input{definitionen}
+\input{01-intro}
+\input{02-realization}
+\input{03-software}
+\input{04-hardware}
+\input{05-definitionen}
 
 \end{document}
+7
