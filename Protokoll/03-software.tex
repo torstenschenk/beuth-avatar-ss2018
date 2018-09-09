@@ -3,7 +3,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Raspberry Touchscreen Anzeige per Software Drehen}
-Wenn das Raspberry 7\grqq{} Display inds Gehäuse eingebau wird ist die 
+Wenn das Raspberry 7\grqq{} Display ins Gehäuse eingebaut wird ist die 
 Visualisierung des Desktops 180 Grad verdreht. Es müssen Bildschirmanzeige 
 und Toucherkennung gedreht werden. Softwaretechnisch sind dies zwei verschiedene 
 Dinge.
@@ -22,24 +22,22 @@ lcd\_rotate=2\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ffmpeg, ffserver, ffplay}
 
-\textbf{Linux / Raspian ffmpeg} %and pi\_jessie\_motion}
+\textbf{Linux / Raspian ffmpeg mit alsa} %and pi\_jessie\_motion}
 
 \begin{enumerate}
-	\item remove (still needed?):\\
-	sudo apt-get remove libavcodec-extra-56 libavformat56 libavresample2 libavutil54
-	\item download ffmpeg precompiled armhf.deb:\\
-	wget https://github.com/ccrisan/motioneye/wiki/precompiled/ffmpeg\_3.1.1-1\_armhf.deb\\
-	sudo dpkg -i ffmpeg\_3.1.1-1\_armhf.deb
-	%\item install:\\
-	%sudo apt-get install curl libssl-dev libcurl4-openssl-dev libjpeg-dev libx264-142     
-	%libavcodec56 libavformat56 libmysqlclient18 libswscale3 libpq5
-	%\item install motion:\\
-	%wget https://github.com/Motion-Project/motion/releases/download/release-4.0.1/pi\_jessie\_motion\_4.0.1-1\_armhf.deb\\
-	%sudo dpkg -i pi\_jessie\_motion\_4.0.1-1\_armhf.deb
+%	\item remove (still needed?):\\
+%	sudo apt-get remove libavcodec-extra-56 libavformat56 libavresample2 libavutil54
+%	\item download ffmpeg precompiled armhf.deb:\\
+%	wget https://github.com/ccrisan/motioneye/wiki/precompiled/ffmpeg\_3.1.1-1\_armhf.deb\\
+%	sudo dpkg -i ffmpeg\_3.1.1-1\_armhf.deb
+
+  \item Neue Build-Anweisung
 	
-\textbf{Aufzeichnen von mp4 mit Audio}\\
-ffmpeg -y -f video4linux2 -s 320x240 -i /dev/video0 -f alsa -i pulse -ac 2 -strict experimental ffmpegFile.mp4\\
-Abspielen mit mplayer, ffplay oder vlc möglich.
+  \item Aufzeichnen von mp4 mit Audio\\
+  
+  
+  %ffmpeg -y -f video4linux2 -s 320x240 -i /dev/video0 -f alsa -i pulse -ac 2 -strict experimental ffmpegFile.mp4\\
+  %Abspielen mit mplayer, ffplay oder vlc möglich.
 
 \end{enumerate}
 
@@ -72,7 +70,7 @@ https://pimylifeup.com/raspberry-pi-webcam-server/\\
 Debian 9 (stretch) — current stable release\\
 Debian 8 (jessie) — obsolete stable release\\
 
-\textbf{Raspian pi\_streach\_motion}
+\textbf{Raspian pi\_strech\_motion}
 
 \begin{enumerate}
 	\item install:\\
@@ -86,7 +84,9 @@ Debian 8 (jessie) — obsolete stable release\\
 	libswscale
 
 	\item download motion stretch deb\\
-	sudo wget https://github.com/Motion-Project/motion/releases/download/release-4.0.1/pi\_stretch\_motion\_4.0.1-1\_armhf.deb\\
+	sudo wget https://github.com/Motion-Project/motion/releases/download/release-4.0.1/pi\\
+	\_stretch\_motion\_4.0.1-1\_armhf.deb
+	
 	sudo dpkg -i pi\_stretch\_motion\_4.0.1-1\_armhf.deb\\
 
 	Configuring Motion:\\

@@ -31,7 +31,87 @@ https://github.com/FrankBau/raspi-repo-manifest/wiki/RTSP
 
 	
 ############################################
-  record mp4 video with sound form webcam
+  record mp4 video with sound from webcam
 ############################################
  ffmpeg -y -f video4linux2 -s 320x240 -i /dev/video0 -f alsa -i pulse -ac 2 -strict experimental ffmpegFile.mp4
 
+
+############################################################
+   video Audio Stream to Localhost 4/5sec delay, works!!!!
+############################################################
+ffmpeg -re -f video4linux2 -i /dev/video1 -fflags nobuffer -f alsa -i pulse -an http://localhost:8090/yolandi1.ffm
+
+ffserver -f ffserver.conf
+
+FILE: ffserver.conf:
+## Serverconfig
+HTTPPort 8090
+HTTPBindAddress 0.0.0.0
+MaxHTTPConnections 2000
+MaxClients 1000
+MaxBandwidth 1000
+CustomLog -
+
+<Feed yolandi1.ffm>
+  File ./yolandi1.ffm
+  FileMaxSize 1G
+  ACL allow 127.0.0.1
+</Feed>
+
+# Example streams
+<Stream test.webm>             # Output stream URL definition
+   Feed yolandi1.ffm              # Feed from which to receive video
+   Format webm
+
+   # Audio settings
+   AudioCodec vorbis
+   AudioBitRate 64             # Audio bitrate
+
+   # Video settings
+   VideoCodec libvpx
+   VideoSize 320x256           # Video resolution
+   VideoFrameRate 15           # Video FPS
+   AVOptionVideo flags +global_header  # Parameters passed to encoder
+                                       # (same as ffmpeg command-line parameters)
+   AVOptionVideo cpu-used 0
+   AVOptionVideo qmin 10
+   AVOptionVideo qmax 42
+   AVOptionVideo quality good
+   AVOptionAudio flags +global_header
+   PreRoll 0
+   StartSendOnKey
+   VideoBitRate 100            # Video bitrate
+</Stream>
+
+# Status webpage
+<Stream status.html>
+  Format status
+  # Only allow local people to get the status
+  ACL allow localhost
+  ACL allow 192.168.0.0 192.168.255.255
+  #FaviconURL http://pond1.gladstonefamily.net:8080/favicon.ico
+</Stream>
+
+<Redirect index.html>
+  URL http://www.ffmpeg.org/
+</Redirect>
+
+
+mplayer http://localhost:8090/test.webm
+ffplay -probesize 32 -sync ext http://localhost:8090/test.webm
+
+WEBPAGE index.html to embed webm:
+<!DOCTYPE html>
+<html>
+  <body>
+    <video width="320" height="256" autoplay>
+        <source src="http://localhost:8090/test.webm" type="video/webm">
+        Your browser does not support the video tag.
+    </video>
+    <p><b>Note:</b> The autoplay attribute does not work on some mobile devices.</p>
+  </body>
+</html>
+
+Firefox 62.0
+Open path to local index.html file
+file:///home/ts/Documents/Code/beuth-avatar-ss2018/website/webm/index.html

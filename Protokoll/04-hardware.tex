@@ -2,6 +2,15 @@
 \section{Hardware}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Raspberry Pi 3B+}
+\textbf{Login via ssh}\\
+Passwort und Benutzername können bereits bei der OP-Installation gesetzt werden.\\
+IP-Adresse kann über ip addr show abgefragt werden. Bei häufigen Verbindungen wird empfohlen 
+eine statische IP-Adresse zu vergeben.\\
+ssh pi@192.168.1.3\\
+pwd: xxxxxxxxxx (pwd vom Provider)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Strato Web Server}
 \textbf{Login via ssh}\\
 ssh -X root@85.214.211.169\\
@@ -27,10 +36,13 @@ vnc Passwort eingeben\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Audio Lautsprecher}
-Um Audio auf den Headphone Jack umzuleiten (default ist HDMI) zuerst pulseaudio deinstallieren.\\
-sudo apt remove pulseaudio\\
+%Um Audio auf den Headphone Jack umzuleiten (default ist HDMI) zuerst pulseaudio deinstallieren.\\
+%sudo apt remove pulseaudio\\
 
-Dann die richtige Zuordnung setzen, 1 steht für local audio jack:\\
+Die richtige Zuordnung setzen, sonst gibt es nur Sound vom 
+abspielen von Audiodateien aber nicht im Browser. Bitte im 
+Browser, z.B. mit YouTube. '1' steht für local audio jack über 
+den den Lautsprecher angeschlossen ist:\\
 amixer cset numid=3 1
 amixer cset numid=2 1\\
 oder \\
@@ -49,3 +61,26 @@ pacmd list-samples\\
 Lautsprechertest (abspielen):\\
 mplayer /usr/share/sounds/ubuntu/stereo/button-pressed.ogg 
 
+\subsection{Mikrofon der Webcam}
+Anzeigen, ob Webcam erkannt wurde.\\
+pacmd list-sources\\ 
+
+Audio Stream aufnehmen:\\
+arecord -D plughw:1,0 -f cd test.wav\\
+\#abspielen mit:\\
+aplay test.wav\\
+
+Zeige alle Geräte:\\
+arecord -L\\
+Interessant ist der letzte Eintrag plughw, diesen kann man direkt für
+ffmpeg verwenden, z.B.:\\
+plughw:CARD=C920,DEV=0 ...\\
+
+Wenn beim Testen mit ffmpeg der Fehler: 
+\textbf{Unknown input format: 'alsa'}\\ 
+auftreten, muss ffmpeg aus den Quellen kompiliert werden, siehe 
+Softwarekapitel oder\\ 
+https://lb.raspberrypi.org/forums/viewtopic.php?t=205181
+
+
+ 
