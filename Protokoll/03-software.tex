@@ -6,18 +6,22 @@
 Wenn das Raspberry 7\grqq{} Display ins Gehäuse eingebaut wird ist die 
 Visualisierung des Desktops 180 Grad verdreht. Es müssen Bildschirmanzeige 
 und Toucherkennung gedreht werden. Softwaretechnisch sind dies zwei verschiedene 
-Dinge.
+Dinge.\\
 
-\# Zeige Namen aller angeschlossenen Displays\\
-xrandr -q\\
+\textbf{RASPIAN OP}\\
+Display \& Touchscreen können mit einem Befehl rotiert werden, 
+bitte in /boot/config.txt eintragen:
+\begin{verbatim}lcd_rotate=2\end{verbatim}
 
-\# 180 Grad drehen\\
-xrandr --output HDMI-1 --rotate inverted\\
+\textbf{Andere OP}\\
+Hier wird mittels des lcd\_display Befehls nur der Touchbildschrim 
+gedreht. Es kann xrandr verwendet werden um zusätzlich die visuelle Darstellung zu 
+um 180 Grad zu drehen. Display Infos \& drehen:
+\begin{verbatim}
+xrandr -q
+xrandr --output HDMI-1 --rotate inverted
+\end{verbatim}
 
-\# Touchscreen muss auch rotiert werden\\
-\# bitte einfügen in /boot/config.txt:\\
-\# rote touchscreen (display rotated via xrandr startup script)\\
-lcd\_rotate=2\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ffmpeg, ffserver, ffplay}
@@ -86,7 +90,12 @@ Aufzeichnen von wav mit ffmpeg:
 abspielen:
 \begin{verbatim}aplay alsaout.wav \end{verbatim}
 Aufzeichnen von webm mit ffmpeg:
-\begin{verbatim}./ffmpeg -f alsa -i hw:1 -strict experimental alsaout.webm  \end{verbatim}
+\begin{verbatim}
+./ffmpeg -f alsa -i hw:1 -strict experimental alsaout.webm  
+ACHTUNG: bei ffmpeg müssen Anführungszeichen um plughw gesetzt werden!
+webcam: ./ffmpeg -f alsa -i "plughw:CARD=C920,DEV=0" -strict experimental alsaout.webm
+
+\end{verbatim}
 abspielen:
 \begin{verbatim}
 vlc alsaout.webm 

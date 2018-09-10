@@ -32,7 +32,20 @@ echo \grqq{}\$DISPLAY\grqq{}\\
 \# in server ssh console\\
 xtightvncviewer 127.0.0.1:1\\
 vnc Passwort eingeben\\
-\# X Fenster sollte sich öffnen
+\# X Fenster sollte sich öffnen\\
+
+Dateien auf Server übertragen:
+\begin{verbatim}
+scp <source> <destination>
+To copy a file from B to A while logged into B:
+scp /path/to/file username@a:/path/to/destination
+To copy a file from B to A while logged into A:
+scp username@b:/path/to/file /path/to/destination
+# upload: local -> remote
+scp local_file user@remote_host:remote_file
+scp /path/file.conf user@host:/path/file.conf
+\end{verbatim}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Audio Lautsprecher}
@@ -61,20 +74,24 @@ pacmd list-samples\\
 Lautsprechertest (abspielen):\\
 mplayer /usr/share/sounds/ubuntu/stereo/button-pressed.ogg 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Mikrofon der Webcam}
 Anzeigen, ob Webcam erkannt wurde.\\
 pacmd list-sources\\ 
 
-Audio Stream aufnehmen:\\
-arecord -D plughw:1,0 -f cd test.wav\\
-\#abspielen mit:\\
-aplay test.wav\\
+Audio Stream aufnehmen:
+\begin{verbatim}arecord -D plughw:1,0 -f cd test.wav\end{verbatim}
+\#abspielen mit:
+\begin{verbatim}aplay test.wav\end{verbatim}
 
-Zeige alle Geräte:\\
-arecord -L\\
+Falls Hardwarekennung unbekannt, zeige alle Geräte:
+\begin{verbatim}arecord -L\end{verbatim}
 Interessant ist der letzte Eintrag plughw, diesen kann man direkt für
-ffmpeg verwenden, z.B.:\\
-plughw:CARD=C920,DEV=0 ...\\
+ffmpeg verwenden, z.B.:
+\begin{verbatim}
+webcam: ...plughw:CARD=C920,DEV=0 ...
+usb-micro: arecord -D plughw:CARD=Device,DEV=0 -f cd test.wav
+\end{verbatim}
 
 Wenn beim Testen mit ffmpeg der Fehler: 
 \textbf{Unknown input format: 'alsa'}\\ 
