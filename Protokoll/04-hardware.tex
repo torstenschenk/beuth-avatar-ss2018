@@ -55,14 +55,16 @@ scp /path/file.conf user@host:/path/file.conf
 Die richtige Zuordnung setzen, sonst gibt es nur Sound vom 
 abspielen von Audiodateien aber nicht im Browser. Bitte im 
 Browser, z.B. mit YouTube. '1' steht für local audio jack über 
-den den Lautsprecher angeschlossen ist:\\
+den den Lautsprecher angeschlossen ist:
+\begin{verbatim}
 amixer cset numid=3 1
-amixer cset numid=2 1\\
-oder \\
-amixer -c 0 cset numid=3 1\\
+amixer cset numid=2 1
+oder
+amixer -c 0 cset numid=3 1
+\end{verbatim}
 
-Audio Tests:\\
-aplay /usr/share/scratch/Media/Sounds/Vocals/Singer1.wav\\
+\textbf{Audio Tests}
+\begin{verbatim}aplay /usr/share/scratch/Media/Sounds/Vocals/Singer1.wav\end{verbatim}
 Facebook Video Call: OK (schlechter Sound)\\
 Musikvidoes auf YoutTube: OK (guter Sound)\\
 

@@ -96,11 +96,7 @@ CustomLog -
   URL http://www.ffmpeg.org/
 </Redirect>
 
-
-mplayer http://localhost:8090/test.webm
-ffplay -probesize 32 -sync ext http://localhost:8090/test.webm
-
-WEBPAGE index.html to embed webm:
+# WEBPAGE index.html to embed webm:
 <!DOCTYPE html>
 <html>
   <body>
@@ -111,6 +107,9 @@ WEBPAGE index.html to embed webm:
     <p><b>Note:</b> The autoplay attribute does not work on some mobile devices.</p>
   </body>
 </html>
+
+mplayer http://localhost:8090/test.webm
+ffplay -probesize 32 -sync ext http://localhost:8090/test.webm
 
 Firefox 62.0
 Open path to local index.html file

@@ -92,8 +92,8 @@ abspielen:
 Aufzeichnen von webm mit ffmpeg:
 \begin{verbatim}
 ./ffmpeg -f alsa -i hw:1 -strict experimental alsaout.webm  
-ACHTUNG: bei ffmpeg müssen Anführungszeichen um plughw gesetzt werden!
-webcam: ./ffmpeg -f alsa -i "plughw:CARD=C920,DEV=0" -strict experimental alsaout.webm
+ACHTUNG: bei ffmpeg dürfen keine Anführungszeichen um plughw gesetzt werden!
+webcam: ./ffmpeg -f alsa -i plughw:CARD=C920,DEV=0 -strict experimental alsaout.webm
 
 \end{verbatim}
 abspielen:
