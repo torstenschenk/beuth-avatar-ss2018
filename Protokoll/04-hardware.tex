@@ -7,32 +7,49 @@
 Passwort und Benutzername können bereits bei der OP-Installation gesetzt werden.\\
 IP-Adresse kann über ip addr show abgefragt werden. Bei häufigen Verbindungen wird empfohlen 
 eine statische IP-Adresse zu vergeben.\\
-ssh pi@192.168.1.3\\
+
+Bitte zuerst überprüfen, ob der ssh.service läuft.
+\begin{verbatim}/etc/init.d/ssh status\end{verbatim}
+Falls nicht in der Raspberry Konfiguration aktivieren:
+\begin{verbatim}
+sudo rapsi-config
+\end{verbatim}
+Danach ist es möglich über ssh einzuloggen.
+\begin{verbatim}
+ssh pi@192.168.1.3
 pwd: xxxxxxxxxx (pwd vom Provider)
+\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Strato Web Server}
-\textbf{Login via ssh}\\
-ssh -X root@85.214.211.169\\
-ssh -X root@85.214.211.169 -L 5901:localhost:5901\\
+\textbf{Login via ssh}
+\begin{verbatim}
+ssh -X root@85.214.211.169
+ssh -X root@85.214.211.169 -L 5901:localhost:5901
 pwd: xxxxxxxxxx (pwd vom Provider)
-
+\end{verbatim}
 \textbf{Remote Desktop}\\
 tightvncserver: server\\
-xtightvncviewer: viewer\\
-sudo apt install tightvncserver xtightvncviewer\\
-\# set xtightvnciewer pwd\\
+xtightvncviewer: viewer
+\begin{verbatim}sudo apt install tightvncserver xtightvncviewer
+set xtightvnciewer pwd
+\end{verbatim}
 
-\textbf{Full Login}\\
-ssh -X root@85.214.211.169 -L 5901:localhost:5901\\
-ssh Passwort eingeben\\
-\# Start vncserver\\
-vncserver :1\\
-echo \grqq{}\$DISPLAY\grqq{}\\
-\# in server ssh console\\
-xtightvncviewer 127.0.0.1:1\\
-vnc Passwort eingeben\\
-\# X Fenster sollte sich öffnen\\
+\textbf{Full Login}
+\begin{verbatim}
+ssh -X root@85.214.211.169 -L 5901:localhost:5901
+ssh Passwort eingeben
+\end{verbatim}
+Start vncserver
+\begin{verbatim}
+vncserver :1
+echo "$DISPLAY"
+\end{verbatim}
+in server ssh console
+\begin{verbatim}xtightvncviewer 127.0.0.1:1
+vnc Passwort eingeben
+\end{verbatim}
+X Fenster sollte sich öffnen\\
 
 Dateien auf Server übertragen:
 \begin{verbatim}
@@ -41,7 +58,9 @@ To copy a file from B to A while logged into B:
 scp /path/to/file username@a:/path/to/destination
 To copy a file from B to A while logged into A:
 scp username@b:/path/to/file /path/to/destination
-# upload: local -> remote
+\end{verbatim}
+upload: local -> remote
+\begin{verbatim}
 scp local_file user@remote_host:remote_file
 scp /path/file.conf user@host:/path/file.conf
 \end{verbatim}
