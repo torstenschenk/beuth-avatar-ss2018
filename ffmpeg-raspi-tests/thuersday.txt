@@ -1,0 +1,10 @@
+Stream audio to local host:
+ffmpeg -ar 8000 -f alsa -i hw:1 -acodec mp2 -b:a 128k -f rtp rtp://localhost:8090
+vlc rtp://localhost:8090
+------
+Record audio:
+arecord -D plughw:1,0 -f cd test.wav
+mplayer test.wav
+------
+
+
