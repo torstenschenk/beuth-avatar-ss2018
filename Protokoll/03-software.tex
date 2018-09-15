@@ -152,16 +152,19 @@ ffplay
 Als erster Test kann ffmpeg dazu verwendet werden Videos mit oder ohne Audio zu speichern.\\
 Dabei traten beim .ogg Format ungewöhnliche Speed-Ups oder Sprünge statt. Mp4 ist von 
 ausgezeichneter Qualität. Der Befahlt list\_formats zeigt alle von der Webcam unterstützten 
-Formate an. Tests ohne Audio:
+Formate an.\\
+
+Test nur Video:
 \begin{verbatim}
 ffmpeg -f v4l2 -list_formats all -i /dev/video0
 
 ffmpeg -f v4l2 -r 25 -s 640x480 -i /dev/video0 out.avi
 ffmpeg -f v4l2 -r 25 -s 640x480 -i /dev/video0 out.mp4
 ffmpeg -f v4l2 -r 25 -s 640x480 -i /dev/video0 out.ogg
+ffplay out...
 \end{verbatim}
 
-Test mit Audio:
+Test nur Audio:
 \begin{verbatim}
 arecord -D plughw:1,0 -f cd test.wav
 mplayer test.wav
@@ -169,6 +172,20 @@ ffmpeg -f alsa -i hw:1 -t 30 out.wav
 ffplay out.wav
 \end{verbatim}
 
+Test mit Video und Audio (audio delay 1s):
+\begin{verbatim}
+ffmpeg -f alsa -ar 24000 -i plughw:1 -f v4l2 -r 20 -i /dev/video0 -vcodec mpeg4 
+-acodec aac -strict experimental out.mp4
+ffplay out.mp4
+\end{verbatim}
+
+Live-Stream to YouTube (YouTube Account nötig):
+\begin{verbatim}
+ffmpeg -f v4l2 -i /dev/video0 -ar 44100 -ac 2 -acodec pcm_s16le -f alsa -ac 2 
+-i plughw:1 -acodec aac -ab 128k -strict experimental -s 640x320 
+-vcodec h264 -pix_fmt yuv420p -g 10 -vb 32k -profile:v baseline -r 5 
+-f flv rtmp://a.rtmp.youtube.com/live2/<stream-key>
+\end{verbatim}
 
 Danach kann über den ffserver auf eine Webpage gestreamt werden:\\
 ffserver.config
@@ -326,7 +343,7 @@ playback-tutorial-6.c:1:10: fatal error: gst/gst.h: No such file or directory
 gstreamer-1.0 ist der folgenden lib enthalten:\\
 sudo apt install libgstreamer1.0-dev\\
 
-\textbf{Beispiel Programme gstreamer kompilieren}
+\textbf{Beispiel Programme gstreamer kompilieren}\\
 gcc playback-tutorial-6.c -o playback-tutorial-6 `pkg-config --cflags --libs gstreamer-1.0`
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
