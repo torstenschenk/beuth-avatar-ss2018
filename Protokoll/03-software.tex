@@ -124,8 +124,13 @@ Btw, I am able to stream directly to YouTube now without any issues. I use an ex
 \subsection{Installation von FFmpeg aus Source-Code}
 Wichtige Info: ffserver wurde beim Upgrade auf ffmpeg Version 4.0 gelöscht. Letzte Version mit ffserver ist 3.4. Daher git checkout 3.4! Wenn ffplay mitkompiliert werden soll muss zuerst sdl installiert werden:
 \begin{verbatim}
-  sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev \
+  sudo apt install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev \
   libsdl2-mixer-dev
+\end{verbatim}
+
+Für libmp3lame > 3.88 bitte zusätzlich installieren:
+\begin{verbatim}
+  sudo apt install libmp3lame-dev
 \end{verbatim}
 
 Siehe auch:\\
@@ -196,8 +201,9 @@ sudo make install
 cd ..
 git clone https://github.com/FFmpeg/FFmpeg.git
 cd ffmpeg
-./configure --arch=armel --target-os=linux --enable-gpl --enable-libx264 
---enable-nonfree --enable-libtheora --enable-libvorbis --enable-libvpx
+./configure --arch=armel --target-os=linux --enable-gpl --enable-libx264 \
+  --enable-nonfree --enable-libtheora --enable-libvorbis --enable-libvpx \
+  --enable-libmp3lame
 make
 sudo make install
 \end{verbatim}	
@@ -207,23 +213,20 @@ libtheora, libxcb, libvpx und die Programme ffmpeg, ffserver und \textbf{ffplay}
 angezeigt werden.
 \begin{verbatim}
 External libraries:
-alsa			    libx264			sdl2
-iconv			    libxcb			sndio
-libtheora		    libxcb_shape		xlib
-libvorbis		    libxcb_xfixes		zlib
-libvpx
+alsa			libvorbis		libxcb_shape		sndio
+iconv			libvpx			libxcb_xfixes		xlib
+libmp3lame		libx264			sdl2			zlib
+libtheora		libxcb
 
 External libraries providing hardware acceleration:
 v4l2_m2m
 
 Libraries:
-avcodec			    avformat			swresample
-avdevice		    avutil			swscale
-avfilter		    postproc
+avcodec			avfilter		avutil			swresample
+avdevice		avformat		postproc		swscale
 
 Programs:
-ffmpeg			    ffprobe			ffserver
-ffplay
+ffmpeg			ffplay			ffprobe			ffserver
 \end{verbatim}
 
 \subsection{ffmepg Tests}
