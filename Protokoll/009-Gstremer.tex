@@ -87,7 +87,7 @@ Examples:
 ! application/x-rtp, encoding-name=VP8 !
 \end{verbatim}
 
-\textbf{4) Other elements}\\
+\textbf{4) Other elements}
 \begin{itemize}
 
 \item  \textbf{Muxers/Demuxers} – These elements encapsulate (pair) video and audio in a common container. Common formats are mp4, webm, ogg, mov.
@@ -106,49 +106,66 @@ E.g.: tee, queue2.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Commands}
-\textbf{1) Video test source to screen}
+\textbf{1) Video Test Source zum Display}
 \begin{verbatim}
     gst-launch-1.0 videotestsrc pattern=1 ! videoconvert ! autovideosink
 \end{verbatim}
 
-\textbf{2) Audio test source to speakers}
+\textbf{2) Audio Test Source zum Lautsprecher}
 \begin{verbatim}
    gst-launch-1.0 audiotestsrc ! audioconvert ! autoaudiosink
 \end{verbatim}
 
-\textbf{3) Audio test source to nothing (fake), but still a valid pipeline}
+\textbf{3) Audio Test Quelle zu Fake Sink, aber trotzdem vollständige Pipeline}
 \begin{verbatim}
    gst-launch-1.0 audiotestsrc ! audioconvert ! fakesink
 \end{verbatim}
 
-\textbf{4) Video broadcast over TCP/HTTP}\\\\
-\textbf{Send via:}
+\textbf{4) Video Test broadcast over TCP/HTTP}
 \begin{verbatim}
+Sender
     gst-launch-1.0 videotestsrc horizontal-speed=5  ! vp8enc ! gdppay !
     tcpserversink host=127.0.0.1 port=5200
-\end{verbatim}\\\\
-\textbf{Receive via:}
-\begin{verbatim}
+Receiver
     gst-launch-1.0 -v tcpclientsrc port=5200 ! gdpdepay ! vp8dec !
     videoconvert ! autovideosink
 \end{verbatim}
 
-
-\textbf{5) Video broadcast over RTP (via UDP) from a camera}\\\\
-\textbf{Send via:}
+\textbf{5) Video Broadcast über RTP (via UDP) von Webcam}
 \begin{verbatim}
+Sender
     gst-launch-1.0 v4l2src ! \
 	videoconvert ! video/x-raw, width=640,height=480 ! \
 	omxh264enc ! \
     rtph264pay pt=96 config-interval=1 ! \
     udpsink host=192.168.2.106 port =8554
-\end{verbatim}\\\\
-\textbf{Receive via:}
-\begin{verbatim}
+Receiver
     gst-launch-1.0 udpsrc port=8554 \
 	caps="application/x-					  rtp,media=video,clockrate=90000,payload=96,encoding-name=H264" ! \
 	rtph264depay ! avdec_h264 ! autovideosink
 \end{verbatim}
 
+\textbf{6) Video mit synthetischem Audio}
+\begin{verbatim}
+Reciever
+gst-launch-1.0 udpsrc port=5001 ! application/x-rtp, clock-rate=44100, payload=97 ! rtpL16depay ! audioconvert ! alsasink sync=false udpsrc port=5000 caps="application/x-rtp,media=video,payload=96,encoding-name=H264" ! rtph264depay ! avdec_h264 ! autovideosink
+Sender:
+gst-launch-1.0 -v audiotestsrc ! audioconvert ! audio/x-raw,channels=1,depth=16,width=16,rate=44100 ! rtpL16pay pt=97 ! udpsink host=192.168.178.29 port=5001 v4l2src ! videoconvert ! video/x-raw, width=640,height=480 ! omxh264enc ! rtph264pay pt=96 config-interval=1 ! udpsink host=192.168.178.29 port=5000
+\end{verbatim}
+
+\textbf{7) Video and Audio over RTP (via UDP) from Webcam}
+\begin{verbatim}
+Sender
+    gst-launch-1.0 -v alsasrc device=plughw:CARD=StudioTM,DEV=0 !
+     audioconvert ! audio/x-raw,channels=1,depth=16,width=16,rate=44100 !
+      rtpL16pay pt=97 ! udpsink host=192.168.178.29 port=5001 v4l2src !
+       videoconvert ! video/x-raw, width=640,height=480 ! omxh264enc !
+        rtph264pay pt=96 config-interval=1 ! udpsink host=192.168.178.29 port=5000
+Receiver
+    gst-launch-1.0 udpsrc port=5001 ! application/x-rtp, clock-rate=44100,
+     payload=97 ! rtpL16depay ! audioconvert ! alsasink sync=false udpsrc
+      port=5000 caps="application/x-rtp,media=video,payload=96,encoding-name=H264" 
+      ! rtph264depay ! avdec_h264 ! autovideosink
+\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
