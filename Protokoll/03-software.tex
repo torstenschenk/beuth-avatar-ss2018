@@ -22,27 +22,46 @@ xrandr -q
 xrandr --output HDMI-1 --rotate inverted
 \end{verbatim}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Paket Manager}
+Pakete auf aktuellem Stand halten
+\begin{verbatim}
+sudo apt update
+sudo apt upgrade
+sudp apt-get update
+
+z.B. Firefox für Raspi instalieren
+sudo apt install firefox-esr
+\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ffmpeg, ffserver, ffplay}
 
 \textbf{Linux / Raspian ffmpeg mit alsa} %and pi\_jessie\_motion}
+
+Die ffmpeg Pakete vom APT-Paketmanager enthalten keinen Support für alsa...
    
 REWORK in GERMAN:\\
 No, unfortunately not. You must recompile ffmpeg to add enable additional libraries. Below is the script I build to compile ffmpeg with alsa, fdk-aac, and libx264 support. It will install ffmpeg in your home folder inside a "ffmpeg" folder, so you'll need to call it specifically from there unless you add it to your path. I recommend uninstalling your current ffmpeg before using my script.
 
 Btw, I am able to stream directly to YouTube now without any issues. I use an external USB sound card and the PiCam v2 and stream a 1920x1080@25fps video stream with a 192kbps stereo audio stream mixed in. It works great!\\
 
-Wichtige Info, ffserver wurde beim Upgrade auf ffmpeg Version 4.0 gelöscht. Letzte Version mit ffserver ist 3.4. Daher git checkout 3.4!
+\textbf{Installation von FFmpeg aus Source-Code}\\
+Wichtige Info: ffserver wurde beim Upgrade auf ffmpeg Version 4.0 gelöscht. Letzte Version mit ffserver ist 3.4. Daher git checkout 3.4! Wenn ffplay mitkompiliert werden soll muss zuerst sdl installiert werden:\\
+\begin{verbatim}
+sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-mixer-dev
+\end{verbatim}
+Siehe auch:\\
+http://computingvoyage.com/2114/installing-sdl2-on-raspbian-jessie/
 
-Installation von FFmpeg aus Source-Code: 
 \begin{verbatim}
 #!/bin/bash
-# My first script
-# 
-# to install ffserver, you have to check out the 3.5 of 3.4 version of ffmepg git repo
-# to be able to compile ffmpeg with x264, you also have to choose an old version from git repo
-# tested was the version, before x264_bit_depth was removed (needed for ffmpeg 3.4, 3.5)
+# ffmpeg install script by Schenk/Omid
+# To make executable: chmod +x install.sh
+# To install ffserver, you have to check out the 3.5 of 3.4 version of ffmepg git 
+# repo to be able to compile ffmpeg with x264, you also have to choose an old 
+# version from git repo tested was the version, before x264_bit_depth was removed 
+# (needed for ffmpeg 3.4, 3.5)
 # x264 hash key checkout: 7839a9e1f03b49e3e0cbfcb3091093af7c6d54ee
 #
 wget http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.3.tar.gz
@@ -100,15 +119,43 @@ sudo make install
 cd ..
 git clone https://github.com/FFmpeg/FFmpeg.git
 cd ffmpeg
-./configure --arch=armel --target-os=linux --enable-gpl --enable-libx264 --enable-nonfree --enable-libtheora --enable-libvorbis --enable-libvpx
+./configure --arch=armel --target-os=linux --enable-gpl --enable-libx264 
+--enable-nonfree --enable-libtheora --enable-libvorbis --enable-libvpx
 make
 sudo make install
 \end{verbatim}	
-
-Als erste Tests kann ffmpeg dazu verwendet werden Videos mit oder ohne Audio zu speichern.\\
-Dabei traten beim .ogg Format ungewöhnliche Speed-Ups oder Sprünge statt. Mp4 ist von 
-ausgezeichneter Qualität. Tests ohne Audio:
+HINT: nachdem ./configure ausgeführt wurde, kann im Log kontrolliert werden, ob alle 
+benötigten apps kompiliert werden. Es sollten die Bibliotheken, alsa, libx264, sdl2,
+libtheora, libxcb, libvpx und die Programme ffmpeg, ffserver und \textbf{ffplay} 
+angezeigt werden.
 \begin{verbatim}
+External libraries:
+alsa			    libx264			sdl2
+iconv			    libxcb			sndio
+libtheora		    libxcb_shape		xlib
+libvorbis		    libxcb_xfixes		zlib
+libvpx
+
+External libraries providing hardware acceleration:
+v4l2_m2m
+
+Libraries:
+avcodec			    avformat			swresample
+avdevice		    avutil			swscale
+avfilter		    postproc
+
+Programs:
+ffmpeg			    ffprobe			ffserver
+ffplay
+\end{verbatim}
+
+Als erster Test kann ffmpeg dazu verwendet werden Videos mit oder ohne Audio zu speichern.\\
+Dabei traten beim .ogg Format ungewöhnliche Speed-Ups oder Sprünge statt. Mp4 ist von 
+ausgezeichneter Qualität. Der Befahlt list\_formats zeigt alle von der Webcam unterstützten 
+Formate an. Tests ohne Audio:
+\begin{verbatim}
+ffmpeg -f v4l2 -list_formats all -i /dev/video0
+
 ffmpeg -f v4l2 -r 25 -s 640x480 -i /dev/video0 out.avi
 ffmpeg -f v4l2 -r 25 -s 640x480 -i /dev/video0 out.mp4
 ffmpeg -f v4l2 -r 25 -s 640x480 -i /dev/video0 out.ogg
@@ -118,6 +165,8 @@ Test mit Audio:
 \begin{verbatim}
 arecord -D plughw:1,0 -f cd test.wav
 mplayer test.wav
+ffmpeg -f alsa -i hw:1 -t 30 out.wav
+ffplay out.wav
 \end{verbatim}
 
 

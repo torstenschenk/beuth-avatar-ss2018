@@ -1,0 +1,7 @@
+# geht nicht :(
+
+ffmpeg -f video4linux2 -i /dev/video0 -f alsa -i plughw:1,0 -r 25 -vcodec libx264 -strict experimental -acodec aac -b:a 20k -b:v 200k -aspect 4:3 -s 320x260 -ar 16000  -f flv rtmp://localhost:1935/live/test1
+
+ffmpeg -f video4linux2 -i /dev/video0 -f alsa -i plughw:1,0 -r 25 -vcodec libx264 -strict experimental -acodec aac -b:a 20k -b:v 200k -aspect 4:3 -s 320x260 -ar 16000  -f flv outva.avi
+
+# 

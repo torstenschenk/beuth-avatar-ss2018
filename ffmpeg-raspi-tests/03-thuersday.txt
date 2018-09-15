@@ -7,4 +7,5 @@ arecord -D plughw:1,0 -f cd test.wav
 mplayer test.wav
 ------
 
+ffmpeg -r 25 -s 352x288 -f video4linux2 -i /dev/video0 -f alsa -i hw:1 -acodec mp2 -b:a 128k http://localhost:8090/feed1.ffm
 
