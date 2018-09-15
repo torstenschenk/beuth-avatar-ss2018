@@ -11,27 +11,29 @@ Dinge.\\
 \textbf{RASPIAN OP}\\
 Display \& Touchscreen können mit einem Befehl rotiert werden, 
 bitte in /boot/config.txt eintragen:
-\begin{verbatim}lcd_rotate=2\end{verbatim}
+\begin{verbatim}
+  lcd_rotate=2
+\end{verbatim}
 
 \textbf{Andere OP}\\
 Hier wird mittels des lcd\_display Befehls nur der Touchbildschrim 
 gedreht. Es kann xrandr verwendet werden um zusätzlich die visuelle Darstellung zu 
 um 180 Grad zu drehen. Display Infos \& drehen:
 \begin{verbatim}
-xrandr -q
-xrandr --output HDMI-1 --rotate inverted
+  xrandr -q
+  xrandr --output HDMI-1 --rotate inverted
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Paket Manager}
 Pakete auf aktuellem Stand halten
 \begin{verbatim}
-sudo apt update
-sudo apt upgrade
-sudp apt-get update
+  sudo apt update
+  sudo apt upgrade
+  sudp apt-get update
 
-z.B. Firefox für Raspi instalieren
-sudo apt install firefox-esr
+  z.B. Firefox für Raspi instalieren
+  sudo apt install firefox-esr
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,7 +51,7 @@ Btw, I am able to stream directly to YouTube now without any issues. I use an ex
 \textbf{Installation von FFmpeg aus Source-Code}\\
 Wichtige Info: ffserver wurde beim Upgrade auf ffmpeg Version 4.0 gelöscht. Letzte Version mit ffserver ist 3.4. Daher git checkout 3.4! Wenn ffplay mitkompiliert werden soll muss zuerst sdl installiert werden:\\
 \begin{verbatim}
-sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-mixer-dev
+  sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-mixer-dev
 \end{verbatim}
 Siehe auch:\\
 http://computingvoyage.com/2114/installing-sdl2-on-raspbian-jessie/
@@ -156,35 +158,35 @@ Formate an.\\
 
 Test nur Video:
 \begin{verbatim}
-ffmpeg -f v4l2 -list_formats all -i /dev/video0
+  ffmpeg -f v4l2 -list_formats all -i /dev/video0
 
-ffmpeg -f v4l2 -r 25 -s 640x480 -i /dev/video0 out.avi
-ffmpeg -f v4l2 -r 25 -s 640x480 -i /dev/video0 out.mp4
-ffmpeg -f v4l2 -r 25 -s 640x480 -i /dev/video0 out.ogg
-ffplay out...
+  ffmpeg -f v4l2 -r 25 -s 640x480 -i /dev/video0 out.avi
+  ffmpeg -f v4l2 -r 25 -s 640x480 -i /dev/video0 out.mp4
+  ffmpeg -f v4l2 -r 25 -s 640x480 -i /dev/video0 out.ogg
+  ffplay out...
 \end{verbatim}
 
 Test nur Audio:
 \begin{verbatim}
-arecord -D plughw:1,0 -f cd test.wav
-mplayer test.wav
-ffmpeg -f alsa -i hw:1 -t 30 out.wav
-ffplay out.wav
+  arecord -D plughw:1,0 -f cd test.wav
+  mplayer test.wav
+  ffmpeg -f alsa -i hw:1 -t 30 out.wav
+  ffplay out.wav
 \end{verbatim}
 
 Test mit Video und Audio (audio delay 1s):
 \begin{verbatim}
-ffmpeg -f alsa -ar 24000 -i plughw:1 -f v4l2 -r 20 -i /dev/video0 -vcodec mpeg4 
--acodec aac -strict experimental out.mp4
-ffplay out.mp4
+  ffmpeg -f alsa -ar 24000 -i plughw:1 -f v4l2 -r 20 -i /dev/video0 -vcodec mpeg4 \
+  -acodec aac -strict experimental out.mp4
+  ffplay out.mp4
 \end{verbatim}
 
 Live-Stream to YouTube (YouTube Account nötig):
 \begin{verbatim}
-ffmpeg -f v4l2 -i /dev/video0 -ar 44100 -ac 2 -acodec pcm_s16le -f alsa -ac 2 
--i plughw:1 -acodec aac -ab 128k -strict experimental -s 640x320 
--vcodec h264 -pix_fmt yuv420p -g 10 -vb 32k -profile:v baseline -r 5 
--f flv rtmp://a.rtmp.youtube.com/live2/<stream-key>
+  ffmpeg -f v4l2 -i /dev/video0 -ar 44100 -ac 2 -acodec pcm_s16le -f alsa -ac 2 \
+  -i plughw:1 -acodec aac -ab 128k -strict experimental -s 640x320 \
+  -vcodec h264 -pix_fmt yuv420p -g 10 -vb 32k -profile:v baseline -r 5 \ 
+  -f flv rtmp://a.rtmp.youtube.com/live2/<stream-key>
 \end{verbatim}
 
 Danach kann über den ffserver auf eine Webpage gestreamt werden:\\
@@ -229,35 +231,14 @@ MaxBandwidth 100000
 
 Start ffserver und ffmpeg:
 \begin{verbatim}
-ffserver -f ffserver.config
-ffmpeg -f v4l2 -i /dev/video0 -vcodec libtheora http://localhost:9090/feed1.ffm
+  ffserver -f ffserver.config
+  ffmpeg -f v4l2 -i /dev/video0 -vcodec libtheora http://localhost:9090/feed1.ffm
 \end{verbatim}
-	
-% Aufzeichnen von wav mit ffmpeg:
-% \begin{verbatim}./ffmpeg -f alsa -i hw:1 alsaout.wav \end{verbatim}
-% abspielen:
-% \begin{verbatim}aplay alsaout.wav \end{verbatim}
-% Aufzeichnen von webm mit ffmpeg:
-% \begin{verbatim}
-% ./ffmpeg -f alsa -i hw:1 -strict experimental alsaout.webm  
-% ACHTUNG: bei ffmpeg dürfen keine Anführungszeichen um plughw gesetzt werden!
-% webcam: ./ffmpeg -f alsa -i plughw:CARD=C920,DEV=0 -strict experimental alsaout.webm
-%
-% \end{verbatim}
-% abspielen:
-% \begin{verbatim}
-%
-% \end{verbatim}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Motion Installation \& Test}
 
-Motion ist ein Programm, das in der Lage ist zu erkennen, wenn ein signifikanter Teil des Kamerabildes sich verändert. Es kann also 
-Bewegung erkennen und einen Warnton übertragen. Kamera streaming 
-Service welches verwendet werden kann, um den Videostream 
-einer Webcam an eine IP Adresse zu leiten. Motion kann mit 
-vielen Geräten verwendet werden. Unterstützt werden:
+Motion ist ein Programm, das in der Lage ist zu erkennen, wenn ein signifikanter Teil des Kamerabildes sich verändert. Es kann also Bewegung erkennen und einen Warnton übertragen. Kamera streaming Service welches verwendet werden kann, um den Videostream einer Webcam an eine IP Adresse zu leiten. Motion kann mit vielen Geräten verwendet werden. Unterstützt werden:
 \begin{itemize}
 \item V4L2 Webcams (closed source)
 \item Video Frame Grabber
@@ -327,24 +308,6 @@ How to test if video and avi works at all:\\
 Test raspi video codex and sound from avi video\\
 omxplayer -p -o local dolbycanyon.avi\\
 -o local = headphone jack
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{gstreamer}
-
-Wenn Fehler beim Compilieren eines gstream Testprogramms auftreten, z.B.
-\begin{verbatim}
-Package gstreamer-1.0 was not found in the pkg-config search path.
-Perhaps you should add the directory containing `gstreamer-1.0.pc'
-to the PKG_CONFIG_PATH environment variable
-No package 'gstreamer-1.0' found
-playback-tutorial-6.c:1:10: fatal error: gst/gst.h: No such file or directory
-\end{verbatim}
-
-gstreamer-1.0 ist der folgenden lib enthalten:\\
-sudo apt install libgstreamer1.0-dev\\
-
-\textbf{Beispiel Programme gstreamer kompilieren}\\
-gcc playback-tutorial-6.c -o playback-tutorial-6 `pkg-config --cflags --libs gstreamer-1.0`
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
