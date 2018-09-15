@@ -1,0 +1,3 @@
+﻿gst-launch-1.0 udpsrc port=8554 \
+caps="application/x-rtp,media=video,clockrate=90000,payload=96,encoding-name=H264" ! \
+rtph264depay ! avdec_h264 ! autovideosink
