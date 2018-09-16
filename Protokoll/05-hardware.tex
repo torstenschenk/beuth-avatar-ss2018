@@ -4,19 +4,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Raspberry Pi 3B+}
 \textbf{Login via ssh}\\
-Passwort und Benutzername können bereits bei der OP-Installation gesetzt werden.\\
-IP-Adresse kann über ip addr show abgefragt werden. Bei häufigen Verbindungen wird empfohlen 
-eine statische IP-Adresse zu vergeben.\\
+Passwort und Benutzername können bereits bei der OP-Installation gesetzt werden. IP-Adresse kann über ip addr show abgefragt werden. Bei häufigen Verbindungen wird empfohlen eine statische IP-Adresse zu vergeben.\\
 
 Bitte zuerst überprüfen, ob der ssh.service läuft.
 \begin{verbatim}
 /etc/init.d/ssh status
 \end{verbatim}
-Sollte ein Fehlermeldung erscheinen bitte ssh-server installieren:\\
+Sollte eine Fehlermeldung erscheinen bitte ssh-server installieren.
 \begin{verbatim}
 sudo opt install openssh-server
 \end{verbatim}
-Falls nicht in der Raspberry Konfiguration aktivieren:
+Falls nicht gestartet, in der Raspberry Konfiguration aktivieren:
 \begin{verbatim}
   sudo raspi-config
 \end{verbatim}
@@ -72,10 +70,14 @@ Dateien auf Server übertragen:
   To copy a file from B to A while logged into A:
   scp username@b:/path/to/file /path/to/destination
 \end{verbatim}
-upload: local -> remote
+Beispiele:
 \begin{verbatim}
-  scp local_file user@remote_host:remote_file
-  scp /path/file.conf user@host:/path/file.conf
+Herunterladen aus der ssh Konsole: logged in PC -> eigener PC
+  scp local_file_logged_in_pc user@my_own_host:dir_of_new_file_location
+z.B. Herunterladen auf eigenen PC:
+  scp /home/pi/Software/test/output.avi ts@192.168.178.25:/home/ts/Documents/tmp/
+Hochladen aus lokaler Konsole: PC -> remote PC (raspberry)
+  scp path_to_my_local_file pi@pi_host:dir_on_remote_pc
 \end{verbatim}
 
 
