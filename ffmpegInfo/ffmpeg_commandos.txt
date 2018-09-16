@@ -39,7 +39,7 @@ https://github.com/FrankBau/raspi-repo-manifest/wiki/RTSP
 ############################################################
    video Audio Stream to Localhost 4/5sec delay, works!!!!
 ############################################################
-ffmpeg -re -f video4linux2 -i /dev/video1 -fflags nobuffer -f alsa -i pulse -an http://localhost:8090/yolandi1.ffm
+ffmpeg -re -f video4linux2 -i /dev/video1 -fflags nobuffer -f alsa -i pulse http://localhost:8090/yolandi1.ffm
 
 ffserver -f ffserver.conf
 

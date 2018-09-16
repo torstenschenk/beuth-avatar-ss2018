@@ -232,8 +232,14 @@ ffmpeg			ffplay			ffprobe			ffserver
 \subsection{ffmepg Tests}
 Als erster Test kann ffmpeg dazu verwendet werden Videos mit oder ohne Audio zu speichern.\\
 Dabei traten beim .ogg Format ungewöhnliche Speed-Ups oder Sprünge statt. Mp4 ist von 
-ausgezeichneter Qualität. Der Befahlt list\_formats zeigt alle von der Webcam unterstützten 
+ausgezeichneter Qualität. Der Befehl list\_formats zeigt alle von der Webcam unterstützten 
 Formate an.\\
+
+Die niedrigste Latenz kann mittels Flags für die Anzeige Apps erreicht werden:
+\begin{verbatim}
+  ffplay -fflags nobuffer 
+  mplayer -benchmark
+\end{verbatim}
 
 Test nur Video:
 \begin{verbatim}
