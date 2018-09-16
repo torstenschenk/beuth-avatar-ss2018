@@ -37,9 +37,10 @@ https://github.com/FrankBau/raspi-repo-manifest/wiki/RTSP
 
 
 ############################################################
-   video Audio Stream to Localhost 4/5sec delay, works!!!!
+   video Audio Stream to Localhost 1sec delay, works!!!!
 ############################################################
-ffmpeg -re -f video4linux2 -i /dev/video1 -fflags nobuffer -f alsa -i pulse http://localhost:8090/yolandi1.ffm
+ffmpeg -re -f video4linux2 -i /dev/video0 -fflags nobuffer -f alsa -i pulse http://localhost:8090/yolandi1.ffm
+ffmpeg -re -f video4linux2 -i /dev/video0 -fflags nobuffer -f alsa -i pulse -ac 2 -strict experimental http://localhost:8090/yolandi1.ffm
 
 ffserver -f ffserver.conf
 
@@ -110,6 +111,10 @@ CustomLog -
 
 mplayer http://localhost:8090/test.webm
 ffplay -probesize 32 -sync ext http://localhost:8090/test.webm
+ffplay -fflags nobuffer -probesize 32 -sync ext http://localhost:8090/test.webm
+
+Status page: http://192.168.178.25:8090/status.html
+oder http://localhost:8090/status.html
 
 Firefox 62.0
 Open path to local index.html file

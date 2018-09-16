@@ -229,6 +229,35 @@ Programs:
 ffmpeg			ffplay			ffprobe			ffserver
 \end{verbatim}
 
+\subsection{ffmepg Optionen \& Flags}
+Auswahl nicht Codec abhängiger Parameter mit moderner Schreibweise. Viele Tutorials enthalten das -an oder -av Flag zum temporären abschalten von Audio oder Video!
+\begin{verbatim}
+-formats   print the list of supported file formats
+-codecs    print the list of supported codecs (E=encode,D=decode)
+-i         set the input file. Multiple -i switchs can be used
+-f         set video format (for the input if before of -i, for output otherwise)
+-an        *** ignore audio
+-vn        *** ignore video
+-ar /-r    set audio rate (in Hz), -r also working
+-ac        set the number of channels
+-b:a /-ab  set audio bitrate
+-b:v /-b   Video bitrate
+-bt        Video bitrate tolerance
+-c:a /-acodec  choose audio codec or use “copy” to bypass audio encoding
+-c:v /-vcodec  choose video codec or use “copy” to bypass video encoding
+-r         video fps. You can also use fractional values like 30000/1001 instead of 29.97
+-s         frame size (w x h, ie: 320x240)
+-aspect    set the aspect ratio i.e: 4:3 or 16:9
+-sameq     ffmpeg tries to keep the visual quality of the input
+-t N       encode only N seconds of video (you can use also the hh:mm:ss.ddd format)
+-croptop, -cropleft, -cropright, -cropbottom   crop input video frame on each side
+-y         automatic overwrite of the output file
+-ss        select the starting time in the source file
+-vol       change the volume of the audio
+-g         Gop size (distance between keyframes)
+-metadata  add a key=value metadata
+\end{verbatim}
+
 \subsection{ffmepg Tests}
 Als erster Test kann ffmpeg dazu verwendet werden Videos mit oder ohne Audio zu speichern.\\
 Dabei traten beim .ogg Format ungewöhnliche Speed-Ups oder Sprünge statt. Mp4 ist von 
@@ -261,9 +290,15 @@ Test nur Audio:
 
 Test mit Video und Audio (audio delay 1s):
 \begin{verbatim}
-  ffmpeg -f alsa -ar 24000 -i plughw:1 -f v4l2 -r 20 -i /dev/video0 -vcodec mpeg4 \
-  -acodec aac -strict experimental out.mp4
+  ffmpeg -f alsa -ar 24000 -i plughw:1 -f v4l2 -r 20 -i /dev/video0 \
+  -vcodec mpeg4 -acodec aac -strict experimental out.mp4
   ffplay out.mp4
+  Test mit Video und Audio (audio delay 1s):
+\end{verbatim}
+Test mit Video und Audio (audio delay 0.3s):
+\begin{verbatim}
+  ffmpeg -f alsa -r 48000 -i hw:1 -f v4l2 -s 800x600 -i /dev/video0 \
+  -r 45 -f avi -c:v mpeg4 -vtag xvid -c:a libmp3lame -b:a 96k output.avi
 \end{verbatim}
 
 \subsection{Streaming}
