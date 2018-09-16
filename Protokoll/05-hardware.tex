@@ -9,10 +9,16 @@ IP-Adresse kann über ip addr show abgefragt werden. Bei häufigen Verbindungen 
 eine statische IP-Adresse zu vergeben.\\
 
 Bitte zuerst überprüfen, ob der ssh.service läuft.
-\begin{verbatim}/etc/init.d/ssh status\end{verbatim}
+\begin{verbatim}
+/etc/init.d/ssh status
+\end{verbatim}
+Sollte ein Fehlermeldung erscheinen bitte ssh-server installieren:\\
+\begin{verbatim}
+sudo opt install openssh-server
+\end{verbatim}
 Falls nicht in der Raspberry Konfiguration aktivieren:
 \begin{verbatim}
-  sudo rapsi-config
+  sudo raspi-config
 \end{verbatim}
 Danach ist es möglich über ssh einzuloggen.
 \begin{verbatim}
