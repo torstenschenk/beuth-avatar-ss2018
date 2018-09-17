@@ -2,20 +2,23 @@
 \section{Gstreamer}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Installing}
+\subsection{Installation}
 Mittels Paketmanager APT (Debian/Ubuntu), yum (Fedora/Centos) or homebrew (Mac) 
 fehlende Pakete installieren, am Beispiel Ubuntu (Rapian Debian):
 \begin{verbatim}
-sudo apt update && apt install -y gstreamer1.0-tools gstreamer1.0-plugins-base 
-gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly 
-gstreamer1.0-libav python-gst-1.0
+  sudo apt update 
+  sudo apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc \
+    gstreamer1.0-tools
+  sudo apt install libgstreamer1.0-dev
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{I/O elements}
-Ein Gstreamer Befehl ist aus einer Kette oder Graph von Plugins aufgebaut. Die Verkettung der Befehle startet mit ein oder mehreren \textbf{src} Plugins und endet mit einem oder mehreren \textbf{sink} Plugins. Es folgt eine List mit src und sink Plugins.\\
+\subsection{I/O Elemente}
+Ein Gstreamer Befehl ist aus einer Kette von Plugins aufgebaut. Die Verkettung der Befehle startet mit ein oder mehreren \textbf{src} Plugins und endet mit einem oder mehreren \textbf{sink} Plugins. Es folgt eine List mit src und sink Plugins.\\
 
-\textbf{Eingangs oder SRC Elemente}
+\textbf{Eingangs oder SRC-Elemente}
 \begin{itemize}
 \item v4l2src – stream from a camera device on a linux system, e.g. device=/dev/video0;
 \item fdsrc – use in conjunction with unix pipes, uses as input the output of other programs such as raspicam on a Raspberry Pi;
@@ -37,12 +40,12 @@ Ein Gstreamer Befehl ist aus einer Kette oder Graph von Plugins aufgebaut. Die V
 \item   fakesink – do not play stream, just finish;
 \item  udpsink – stream result over UDP, specify host=<IP of the target server> and port=<number>;
 \item   multiudpsink
-\item  tcpserversink- stream result over TCP (HTTP), specify host=<IP of the target server> and port=<number>;
-\item rtmpsink- stream result over RTMP, specify host=<IP of the target server> and port=<number>.
+\item  tcpserversink – stream result over TCP (HTTP), specify host=<IP of the target server> and port=<number>;
+\item rtmpsink – stream result over RTMP, specify host=<IP of the target server> and port=<number>.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{ En/Decoding elements}
+\subsection{Kodierungselemente}
 Encoding a raw data stream and decoding encoded data into raw data is a big part of using gstreamer and dealing with media in general. Audio data can be encoded to various formats such as MP3, AAC, Vorbis and Opus. Video can be encoded among others as JPEG 2000, H.264, H.265, MPEG-2, VP8, VP9 and Theora. Gstreamer offers the possibilities to encode/decode in these formats through is bundle of plugins. These plugin bundles are the base, good, bad and ugly plugins.
 \\
 
@@ -160,6 +163,16 @@ Receiver
     rtph264depay ! avdec_h264 ! autovideosink
 \end{verbatim}
 
+
+\textbf{Raspi WebCam C920 Video/Audio via RTP (UDP) an Webserver}
+\begin{verbatim}
+Sender
+  gst-launch-1.0 -v alsasrc device=plughw:1,0 ! audioconvert \
+    ! audio/x-raw,channels=1,depth=16,width=16,rate=44100 \
+    ! rtpL16pay pt=97 ! udpsink host=85.214.211.169 port=5001 v4l2src \
+    ! videoconvert ! video/x-raw, width=640,height=480 ! omxh264enc \
+    ! rtph264pay pt=96 config-interval=1 ! udpsink host=85.214.211.169 port=5000
+\end{verbatim}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{gstreamer C Programme \& Tutorials selbst kompilieren}
 
@@ -170,11 +183,6 @@ Wenn Fehler beim Compilieren eines gstream Testprogramms auftreten, z.B.
   to the PKG_CONFIG_PATH environment variable
   No package 'gstreamer-1.0' found
   playback-tutorial-6.c:1:10: fatal error: gst/gst.h: No such file or directory
-\end{verbatim}
-
-gstreamer-1.0 ist der folgenden lib enthalten:
-\begin{verbatim}
-  sudo apt install libgstreamer1.0-dev
 \end{verbatim}
 
 \textbf{Compiler Befehl für Beispiel 6}\\
