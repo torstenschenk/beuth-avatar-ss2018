@@ -190,25 +190,71 @@ Wenn Fehler beim Compilieren eines gstream Testprogramms auftreten, z.B.
 gcc playback-tutorial-6.c -o playback-tutorial-6 `pkg-config --cflags --libs gstreamer-1.0`
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{janus - gateway}
-\textbf{Installation von Janus}
+\section{janus - gateway - pipeline}
+
+\subsection{Installation von Janus}
 \begin{verbatim}
+sudo apt install slibmicrohttpd-dev libjansson-dev libnice-dev \
+	libssl-dev libsrtp-dev libsofia-sip-ua-dev libglib2.0-dev \
+	libopus-dev libogg-dev libcurl4-openssl-dev liblua5.3-dev \
+	pkg-config gengetopt libtool automake
+
 git clone https://github.com/meetecho/janus-gateway.git
 cd janus-gateway
-git checkout... latest stable version, if compie error choose different
+sh autogen.sh
+
+./configure --prefix=/opt/janus
+
+sudo make 
+sudo make install 
+make configs
+
+wenn ein libsrtp Fehler angezeigt wird libsrtp aus dem Quelen bauen:
+
+wget https://github.com/cisco/libsrtp/archive/v2.0.0.tar.gz
+tar xfv v2.0.0.tar.gz
+cd libsrtp-2.0.0
+./configure --prefix=/usr --enable-openssl
+make shared_library && sudo make install
 \end{verbatim}
 
-libsrtp compile error, not found//
-nicht klar ob librtp0 oder librtp2 benötigt wurde...//
-git enthält nur libsrtp
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Konfiguration}
+Zum Streaming via gstreamer RTP muss noch die cfg Datei angepasst werden.\\
+Alle cfg Dateien liegen in: /opt/janus/etc/janus\\
+
+In Datei:\\
+janus.transport.http.cfg
 \begin{verbatim}
-git clone https://github.com/cisco/libsrtp.git
-oder
-librtp2-dev war es dann, bitte auf anderem PC gegenchecken
-sudo apt install librtp-dev librtp2-dev
+[general]
+http = yes
+ip = ...server-addr-ip-hostname
+[admin]
+admin_http = yes
 \end{verbatim}
 
+funkst noch nicht\\
+janus.plugin.streaming.cfg
+\begin{verbatim}
+[gst-rpwc]
+type = rtp 
+id = 1 
+description = RPWC H264 test streaming 
+audio = yes 
+audioport = 8005 
+audiopt = 10 
+audiortpmap = opus/48000/2 
+video = yes 
+videoport = 8004 
+videopt = 96 
+videortpmap = H264/90000 
+videofmtp = profile-level-id=42e028\;packetization-mode=1 
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{nginx Webserver}
 Installation von nginx webserver\\
+
 nach: https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04
 \begin{verbatim}
 sudo apt-get update
@@ -244,18 +290,19 @@ at start only index from var/www/html/ is shown
 
 change in: /etc/nginx/sites-available
 \begin{verbatim}
- root /var/www/html;
+ #root /var/www/html;
  root /usr/share/nginx/html;
 \end{verbatim}
 So janus example html files can be loaded, e.g.\\
 http://192.168.178.25/demos/\\
 
 Admin Monitor is only available by pwd...\\
-enter a pwd in 
+enter das Password aus /opt/janus/etc/janus/janus.cfg\\ 
+admin\_secret = janusoverlord
 \begin{verbatim}
 /usr/share/nginx/html/demos/admin.js
 line 14
-var secret = "any"
+var secret = "janusoverlord";
 \end{verbatim}
 after that no pwd is requested anymore\\
 open in browser:
@@ -263,40 +310,21 @@ open in browser:
 http://ip-server/demos
 \end{verbatim}
 
-Zum Streaming via gstreamer RTP muss noch die cfg Datei angepasst werden.\\
-Alle cfg Dateien liegen in: /opt/janus/etc/janus\\
-
-In Datei:\\
-janus.transport.http.cfg
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{gstreamer an janus}
+gstreamer command auf raspi
 \begin{verbatim}
-[general]
-http = yes
-ip = ...server-addr-ip-hostname
-[admin]
-admin_http = yes
-\end{verbatim}
-
-funkst noch nicht\\
-janus.plugin.streaming.cfg
-\begin{verbatim}
-[gst-rpwc]
-type = rtp 
-id = 1 
-description = RPWC H264 test streaming 
-audio = yes 
-audioport = 8005 
-audiopt = 10 
-audiortpmap = opus/48000/2 
-video = yes 
-videoport = 8004 
-videopt = 96 
-videortpmap = H264/90000 
-videofmtp = profile-level-id=42e028\;packetization-mode=1 
-\end{verbatim}
-
-gstreamer command auf raspi:
-\begin{verbatim}
-gst-launch-1.0 -v v4l2src ! h264parse ! rtph264pay config-interval=1 pt=96 ! udpsink host=192.168.178.25 port=8004 alsasrc device=plughw:1,0 ! audioconvert ! audioresample ! opusenc ! rtpopuspay ! udpsink host=192.168.178.25 port=8005
+Webcam HD Pro: CARD=C920,DEV=0
+gst-launch-1.0 -v v4l2src ! h264parse ! rtph264pay config-interval=1 pt=96 ! \
+ udpsink host=192.168.178.25 port=8004 alsasrc device=plughw:1,0 ! \ 
+  audioconvert ! audioresample ! opusenc ! rtpopuspay ! udpsink \  host=192.168.178.25 port=8005
+  
+Microsoft® LifeCam Studio(TM): Webcam CARD=StudioTM,DEV=0
+  gst-launch-1.0 v4l2src ! videoconvert ! video/x-raw, width=640,height=480 !\
+  omxh264enc ! rtph264pay pt=96 config-interval=1 ! \ 
+  udpsink host=192.168.178.29 port=8004 alsasrc device=plughw:1,0 ! \
+   audioconvert ! audioresample ! opusenc ! rtpopuspay ! udpsink \
+   host=192.168.178.29 port=8005 
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
