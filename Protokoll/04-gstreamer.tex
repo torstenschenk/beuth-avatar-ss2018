@@ -173,6 +173,7 @@ Sender
     ! videoconvert ! video/x-raw, width=640,height=480 ! omxh264enc \
     ! rtph264pay pt=96 config-interval=1 ! udpsink host=85.214.211.169 port=5000
 \end{verbatim}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{gstreamer C Programme \& Tutorials selbst kompilieren}
 
@@ -188,4 +189,114 @@ Wenn Fehler beim Compilieren eines gstream Testprogramms auftreten, z.B.
 \textbf{Compiler Befehl für Beispiel 6}\\
 gcc playback-tutorial-6.c -o playback-tutorial-6 `pkg-config --cflags --libs gstreamer-1.0`
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{janus - gateway}
+\textbf{Installation von Janus}
+\begin{verbatim}
+git clone https://github.com/meetecho/janus-gateway.git
+cd janus-gateway
+git checkout... latest stable version, if compie error choose different
+\end{verbatim}
+
+libsrtp compile error, not found//
+nicht klar ob librtp0 oder librtp2 benötigt wurde...//
+git enthält nur libsrtp
+\begin{verbatim}
+git clone https://github.com/cisco/libsrtp.git
+oder
+librtp2-dev war es dann, bitte auf anderem PC gegenchecken
+sudo apt install librtp-dev librtp2-dev
+\end{verbatim}
+
+Installation von nginx webserver\\
+nach: https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04
+\begin{verbatim}
+sudo apt-get update
+sudo apt-get install nginx
+sudo ufw app list
+\end{verbatim}
+
+You should get a listing of the application profiles:\\
+Output
+\begin{verbatim}
+Available applications:
+  Nginx Full
+  Nginx HTTP
+  Nginx HTTPS
+  OpenSSH
+\end{verbatim}
+
+We will only need to allow traffic on port 80.\\
+You can enable this by typing:
+\begin{verbatim}
+sudo ufw allow 'Nginx HTTP'
+
+sudo ufw status
+http://server_domain_or_IP
+\end{verbatim}
+
+Copy nginx examples from janus to /usr/share/nginx/html/demos
+\begin{verbatim}
+sudo cp -r /opt/janus/share/janus/demos /usr/share/nginx/html/
+\end{verbatim}
+check browser: http://ip-server
+at start only index from var/www/html/ is shown
+
+change in: /etc/nginx/sites-available
+\begin{verbatim}
+ root /var/www/html;
+ root /usr/share/nginx/html;
+\end{verbatim}
+So janus example html files can be loaded, e.g.\\
+http://192.168.178.25/demos/\\
+
+Admin Monitor is only available by pwd...\\
+enter a pwd in 
+\begin{verbatim}
+/usr/share/nginx/html/demos/admin.js
+line 14
+var secret = "any"
+\end{verbatim}
+after that no pwd is requested anymore\\
+open in browser:
+\begin{verbatim}
+http://ip-server/demos
+\end{verbatim}
+
+Zum Streaming via gstreamer RTP muss noch die cfg Datei angepasst werden.\\
+Alle cfg Dateien liegen in: /opt/janus/etc/janus\\
+
+In Datei:\\
+janus.transport.http.cfg
+\begin{verbatim}
+[general]
+http = yes
+ip = ...server-addr-ip-hostname
+[admin]
+admin_http = yes
+\end{verbatim}
+
+funkst noch nicht\\
+janus.plugin.streaming.cfg
+\begin{verbatim}
+[gst-rpwc]
+type = rtp 
+id = 1 
+description = RPWC H264 test streaming 
+audio = yes 
+audioport = 8005 
+audiopt = 10 
+audiortpmap = opus/48000/2 
+video = yes 
+videoport = 8004 
+videopt = 96 
+videortpmap = H264/90000 
+videofmtp = profile-level-id=42e028\;packetization-mode=1 
+\end{verbatim}
+
+gstreamer command auf raspi:
+\begin{verbatim}
+gst-launch-1.0 -v v4l2src ! h264parse ! rtph264pay config-interval=1 pt=96 ! udpsink host=192.168.178.25 port=8004 alsasrc device=plughw:1,0 ! audioconvert ! audioresample ! opusenc ! rtpopuspay ! udpsink host=192.168.178.25 port=8005
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
