@@ -1,0 +1,342 @@
+<!--
+// janus-gateway streamingtest refactor so I can understand it better
+// GPL v3 as original
+// https://github.com/meetecho/janus-gateway
+// https://github.com/meetecho/janus-gateway/blob/master/html/streamingtest.js
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.0.3/adapter.min.js" ></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.1.0/bootbox.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.3/toastr.min.js"></script>
+<script type="text/javascript" src="janus.js" ></script>
+<script type="text/javascript">
+var server = null;
+<!-- 
+//if(window.location.protocol === 'http:'){ 
+-->
+	server = "http://" + window.location.hostname + ":8088/janus";
+<!--
+//}else{
+//	server = "http://" + window.location.hostname + ":8088/janus";
+//}
+-->
+var janus = null;
+var janus2 = null;
+var streaming = null;
+var streaming2 = null;
+var started = false;
+var spinner = null;
+var selectedStream = null;
+$(document).ready(function() {
+  // Initialize the library (console debug enabled)
+  Janus.init({debug: true, callback: function() {
+    startJanus();
+  }});
+});
+function startJanus(){
+    console.log("starting Janus");
+    $('#start').click(function() {
+      if(started){
+         return;
+      }
+      started = true;
+      // Make sure the browser supports WebRTC
+      if(!Janus.isWebrtcSupported()) {
+        console.error("No webrtc support");
+        return;
+      };
+      // Create session
+      janus = new Janus({
+        server: server,
+        success: function() {
+          console.log("Success");
+          attachToStreamingPlugin(janus);
+        },
+        error: function(error) {
+          console.log(error);
+         console.log("janus error");
+        },
+        destroyed: function() {
+          console.log("destroyed");
+        }
+      });
+	  
+	  // Create session 2
+      janus2 = new Janus({
+        server: server,
+        success: function() {
+          console.log("Success 2");
+          attachToStreamingPlugin(janus2);
+        },
+        error: function(error) {
+          console.log(error);
+         console.log("janus error 2");
+        },
+        destroyed: function() {
+          console.log("destroyed 2");
+        }
+      });
+    });
+}
+function attachToStreamingPlugin(janusInstance){
+
+	if(janusInstance == janus){
+		// Attach to streaming plugin
+		console.log("Attach to streaming plugin");
+		janusInstance.attach({
+		 plugin: "janus.plugin.streaming",
+		 success: function(pluginHandle) {
+		   streaming = pluginHandle;
+		   console.log("Plugin attached! (" + streaming.getPlugin() + ", id=" + streaming.getId() + ")");
+		   // Setup streaming session
+		   updateStreamsList(0);
+		 },
+		 error: function(error) {
+		   console.log("  -- Error attaching plugin... " + error);
+		   console.error("Error attaching plugin... " + error);
+		 },
+		 onmessage: function(msg, jsep) {
+		   console.log(" ::: Got a message :::");
+		   console.log(JSON.stringify(msg));
+		   processMessage(msg);
+		   handleSDP(jsep);
+		 },
+		 onremotestream: function(stream) {
+		   console.log(" ::: Got a remote stream :::");
+		   console.log(JSON.stringify(stream));
+		   handleStream(stream);
+		 },
+		 oncleanup: function() {
+		   console.log(" ::: Got a cleanup notification :::");
+		 }
+		});//end of janusInstance.attach
+   }
+   else if(janusInstance == janus2){
+   		// Attach to streaming plugin
+		console.log("Attach to streaming plugin 2");
+		janusInstance.attach({
+		 plugin: "janus.plugin.streaming",
+		 success: function(pluginHandle) {
+		   streaming2 = pluginHandle;
+		   console.log("Plugin attached! (" + streaming2.getPlugin() + ", id=" + streaming2.getId() + ")");
+		   // Setup streaming session
+		   updateStreamsList(1);
+		 },
+		 error: function(error) {
+		   console.log("  -- Error attaching plugin... " + error);
+		   console.error("Error attaching plugin... " + error);
+		 },
+		 onmessage: function(msg, jsep) {
+		   console.log(" ::: Got a message :::");
+		   console.log(JSON.stringify(msg));
+		   processMessage(msg);
+		   handleSDP2(jsep);
+		 },
+		 onremotestream: function(stream) {
+		   console.log(" ::: Got a remote stream :::");
+		   console.log(JSON.stringify(stream));
+		   handleStream2(stream);
+		 },
+		 oncleanup: function() {
+		   console.log(" ::: Got a cleanup notification :::");
+		 }
+		});//end of janusInstance.attach
+   }
+}
+
+function processMessage(msg){
+  var result = msg["result"];
+  if(result && result["status"]){
+     var status = result["status"];
+     switch(status) {
+       case 'starting':
+         console.log("starting - please wait...");
+         break;
+       case 'preparing':
+         console.log("preparing");
+         break;
+       case 'started':
+         console.log("started");
+         break;
+       case 'stopped':
+         console.log("stopped");
+         stopStream();
+         break;
+     }
+  }else{
+    console.log("no status available");
+  }
+}
+// we never appear to get this jsep thing
+function handleSDP(jsep){
+  console.log(" :: jsep :: ");
+  console.log(jsep);
+  if(jsep !== undefined && jsep !== null) {
+    console.log("Handling SDP as well...");
+    console.log(jsep);
+    // Answer
+    streaming.createAnswer({
+      jsep: jsep,
+      media: { audioSend: false, videoSend: false },      // We want recvonly audio/video
+      success: function(jsep) {
+        console.log("Got SDP!");
+        console.log(jsep);
+        var body = { "request": "start" };
+        streaming.send({"message": body, "jsep": jsep});
+      },
+      error: function(error) {
+        console.log("WebRTC error:");
+        console.log(error);
+        console.error("WebRTC error... " + JSON.stringify(error));
+      }
+    });
+  }else{
+    console.log("no sdp");
+  }
+}
+
+// we never appear to get this jsep thing
+function handleSDP2(jsep){
+  console.log(" :: jsep :: ");
+  console.log(jsep);
+  if(jsep !== undefined && jsep !== null) {
+    console.log("Handling SDP as well...");
+    console.log(jsep);
+    // Answer
+    streaming2.createAnswer({
+      jsep: jsep,
+      media: { audioSend: false, videoSend: false },      // We want recvonly audio/video
+      success: function(jsep) {
+        console.log("Got SDP!");
+        console.log(jsep);
+        var body = { "request": "start" };
+        streaming2.send({"message": body, "jsep": jsep});
+      },
+      error: function(error) {
+        console.log("WebRTC error:");
+        console.log(error);
+        console.error("WebRTC error... " + JSON.stringify(error));
+      }
+    });
+  }else{
+    console.log("no sdp");
+  }
+}
+
+function handleStream(stream){
+  console.log(" ::: Got a remote stream :::");
+  console.log(JSON.stringify(stream));
+  // Show the stream and hide the spinner when we get a playing event
+  console.log("attaching remote media stream");
+  
+  attachMediaStream($('#remotevideo').get(0), stream);
+  $("#remotevideo").bind("playing", function () {
+    console.log("got playing event");
+  });
+}
+
+function handleStream2(stream){
+  console.log(" ::: Got a remote stream :::");
+  console.log(JSON.stringify(stream));
+  // Show the stream and hide the spinner when we get a playing event
+  console.log("attaching remote media stream 2");
+ 
+    attachMediaStream($('#remotevideo2').get(0), stream);
+  $("#remotevideo2").bind("playing", function () {
+    console.log("got playing event");
+  });
+}
+
+function updateStreamsList(index) {
+
+	if(index == 0){
+	  var body = { "request": "list" };
+	  console.log("Sending message (" + JSON.stringify(body) + ")");
+	  streaming.send({"message": body, success: function(result) {
+		 if(result === null || result === undefined) {
+			console.error("no streams available");
+			return;
+		 }
+		 if(result["list"] !== undefined && result["list"] !== null) {
+		   var list = result["list"];
+		   console.log("Got a list of available streams:");
+		   console.log(list);
+		   console.log("taking the first available stream");
+		   var theFirstStream = list[index];
+		   startStream(list[index]);
+		 }else{
+		   console.error("no streams available - list is null");
+		   return;
+		 }
+	  }});
+  }
+  else if(index == 1){
+  	  var body = { "request": "list" };
+	  console.log("Sending message (" + JSON.stringify(body) + ")");
+	  streaming2.send({"message": body, success: function(result) {
+		 if(result === null || result === undefined) {
+			console.error("no streams available");
+			return;
+		 }
+		 if(result["list"] !== undefined && result["list"] !== null) {
+		   var list = result["list"];
+		   console.log("Got a list of available streams:");
+		   console.log(list);
+		   console.log("taking the first available stream");
+		   var theFirstStream = list[index];
+		   startStream(list[index]);
+		 }else{
+		   console.error("no streams available - list is null");
+		   return;
+		 }
+	  }});
+
+  }
+}
+function startStream(selectedStream) {
+  var selectedStreamId = selectedStream["id"];
+  console.log("Selected video id #" + selectedStreamId);
+  if(selectedStreamId === undefined || selectedStreamId === null) {
+    console.log("No selected stream");
+    return;
+  }
+  var body = { "request": "watch", id: parseInt(selectedStreamId) };
+  if(selectedStreamId == '1'){
+	streaming.send({"message": body});
+  }
+  else if(selectedStreamId == '2'){
+	streaming2.send({"message": body});
+  }
+}
+function stopStream() {
+  console.log("stopping stream");
+  var body = { "request": "stop" };
+  streaming.send({"message": body});
+  streaming.hangup();
+  
+  streaming2.send({"message": body});
+  streaming2.hangup();
+}
+</script>
+</head>
+<body style="background-color:#AAAAAA">
+  <div>
+    <button class="btn btn-default" autocomplete="off" id="start">Start</button><br />
+    <div id="stream">
+        <video controls autoplay id="remotevideo" width="640" height="480" style="background-image:linear-gradient(rgb(84, 180, 235), rgb(47, 164, 231) 60%, rgb(29, 156, 229));">
+        </video>
+    </div>
+    <div id="stream2">
+        <video controls autoplay id="remotevideo2" width="640" height="480" style="background-color:red;">
+        </video>
+    </div>
+  </div>
+</body>
+</html>
