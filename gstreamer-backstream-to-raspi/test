@@ -1,0 +1,2 @@
+YouTube
+  ffmpeg -f v4l2 -i /dev/video0 -ar 44100 -ac 2 -acodec pcm_s16le -f alsa -ac 2 -i plughw:1 -acodec aac -ab 128k -strict experimental -s 640x320   -vcodec h264 -pix_fmt yuv420p -g 10 -vb 32k -profile:v baseline -r 5 -f flv rtmp://a.rtmp.youtube.com/live2/<stream-key>

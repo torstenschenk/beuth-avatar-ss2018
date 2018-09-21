@@ -93,11 +93,15 @@ E.g.: audioconvert, audioresample, videoconvert, videoscale.
 \item \textbf{Pipeline} – These elements are used in constructing more complex pipelines. E.g.: tee, queue2.
 \end{itemize}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Testkommandos für Audio \& Video}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Testkommandos für synthetisches Video und Audio}
+
 \textbf{Video Test Source zum Display}
 \begin{verbatim}
+Testbild:
   gst-launch-1.0 videotestsrc pattern=1 ! videoconvert ! autovideosink
+Webcam oder intergrierte Kamera: 
+  gst-launch-1.0 autovideosrc device=/dev/video0 ! autovideosink
 \end{verbatim}
 
 \textbf{Audio Test Source zum Lautsprecher}
@@ -146,6 +150,32 @@ Sender:
     video/x-raw, width=640,height=480 ! omxh264enc ! \
     rtph264pay pt=96 config-interval=1 ! \
     udpsink host=192.168.178.29 port=5000
+\end{verbatim}
+
+\subsection{Video Formate der Kameras}
+Wenn ein nicht unterstütztes Video Format angegeben wird bricht gstreamer ab und zeigt den Fehler
+\begin{verbatim}
+v4l2src0: Internal data stream error.
+\end{verbatim}
+
+Vor Auswahl eines Bildformates alle unterstützten Formate 
+abfragen:
+\begin{verbatim}
+v4l2-ctl --list-formats-ext
+\end{verbatim}
+
+oder über USB Geräte die Kennung und danach all Höhen und Breiten abfragen.
+\begin{verbatim}
+lsusb
+> Bus 001 Device 016: ID 046d:082d Logitech, Inc. HD Pro Webcam C920
+lsusb -s 001:016 -v | egrep "Width|Height"
+\end{verbatim}
+
+\subsection{Kamera \& Mikrofon Streaming}
+Erster Kamera Test:
+\begin{verbatim}
+gst-launch-1.0 v4l2src ! xvimagesink
+gst-launch-1.0 v4l2src ! jpegdec ! xvimagesink
 \end{verbatim}
 
 \textbf{Video and Audio over RTP (via UDP) from Webcam}
