@@ -121,9 +121,10 @@ gst-launch-1.0 udpsrc port=5000 caps="application/x-rtp, media=(string)video, cl
 # RAW format
 # sender
 gst-launch-1.0 -v v4l2src  device=/dev/video1 ! 'video/x-raw, width=(int)800, height=(int)600, framerate=10/1' ! videoconvert ! rtpvrawpay ! udpsink host=192.168.178.24 port=1234
-gst-launch-1.0 -v v4l2src  ! 'video/x-raw, width=(int)1280, height=(int)720, framerate=10/1' ! videoconvert ! rtpvrawpay ! udpsink host=192.168.178.24 port=1234
+gst-launch-1.0 -v v4l2src  ! 'video/x-raw, width=(int)1280, height=(int)720, framerate=10/1' ! videoconvert ! rtpvrawpay ! udpsink host=192.168.178.26 port=1234
 
 # receiver
 gst-launch-1.0 udpsrc port=1234 caps="application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)RAW, sampling=(string)YCbCr-4:2:2, depth=(string)8, width=(string)1280, height=(string)720, colorimetry=(string)BT601-5, payload=(int)96, a-framerate=(string)10" ! rtpvrawdepay ! queue ! videoconvert ! autovideosink
 
-
+# Janus stream Command
+  gst-launch-1.0 -v v4l2src ! h264parse ! rtph264pay config-interval=1 pt=96 ! udpsink host=192.168.178.26 port=8004 alsasrc device=plughw:1,0 ! audioconvert ! audioresample ! opusenc ! rtpopuspay ! udpsink host=192.168.178.26 port=8005

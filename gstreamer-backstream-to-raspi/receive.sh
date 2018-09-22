@@ -26,3 +26,9 @@
 gst-launch-1.0 udpsrc port=1234 caps="application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)RAW, sampling=(string)YCbCr-4:2:2, depth=(string)8, width=(string)1280, height=(string)720, colorimetry=(string)BT601-5, payload=(int)96, a-framerate=(string)10" ! rtpvrawdepay ! queue ! videoconvert ! autovideosink
 
 
+# Receive Janus audio / video stream
+gst-launch-1.0 udpsrc port=8004 caps="application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, packetization-mode=(string)1, profile-level-id=(string)424028, sprop-parameter-sets=(string)"Z0JAKLtAPAES8uAokAAAAwAQAAADA8YEAALcbAAtx73vheEQjUA\=\,aM44gA\=\=", payload=(int)96, ssrc=(uint)1516252937, timestamp-offset=(uint)3795739215, seqnum-offset=(uint)22673, a-framerate=(string)30" ! rtpjitterbuffer ! rtph264depay ! avdec_h264 autovideosink
+
+
+
+
