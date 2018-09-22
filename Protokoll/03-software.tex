@@ -39,14 +39,7 @@ Pakete auf aktuellem Stand halten
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Motion Installation \& Test}
 
-Motion ist ein Programm, das in der Lage ist zu erkennen, wenn ein signifikanter Teil des Kamerabildes sich verändert. Es kann also Bewegung erkennen und einen Warnton übertragen. Kamera streaming Service welches verwendet werden kann, um den Videostream einer Webcam an eine IP Adresse zu leiten. Motion kann mit vielen Geräten verwendet werden. Unterstützt werden:
-\begin{itemize}
-\item V4L2 Webcams (closed source)
-\item Video Frame Grabber
-\item Network Kameras via HTTP, RTSP, RTMP
-\item PI Kameramodul
-\item Webcam
-\end{itemize}
+Motion ist ein Programm, das in der Lage ist zu erkennen, wenn ein signifikanter Teil des Kamerabildes sich verändert. Es kann also Bewegung erkennen und einen Warnton übertragen. Kamera streaming Service welches verwendet werden kann, um den Videostream einer Webcam an eine IP Adresse zu leiten. Motion kann mit vielen Geräten verwendet werden. Unterstützt werden: V4L2 Webcams (closed source), Video Frame Grabber, Network Kameras via HTTP, RTSP, RTMP, PI Kameramodul, Webcam.\\
 
 Video Stream zur IP Adresse des Devices (Raspi) im es im lokalen 
 Netzwerk um Browser anzuzeigen....TODO
@@ -64,64 +57,63 @@ Debian 8 (jessie) — obsolete stable release\\
 \textbf{Raspian pi\_strech\_motion}
 
 \begin{enumerate}
-	\item install:\\
-	sudo apt-get install libmariadbclient18 libpq5 libavcodec57  libavformat57 libavutil55 libswscale4\\
-	einige Pakete sind outdated und müssen durch aktuelle ersetzt werden:\\
-	sudo apt install libx264-148\\
-	libavcodec57\\
-	libavformat57\\
-	libmariadbclient-dev-compat\\
-	default-libmysqlclient-dev\\
-	libswscale
-
-	\item download motion stretch deb\\
-	sudo wget https://github.com/Motion-Project/motion/releases/download/release-4.0.1/pi\\
-	\_stretch\_motion\_4.0.1-1\_armhf.deb
-	
-	sudo dpkg -i pi\_stretch\_motion\_4.0.1-1\_armhf.deb\\
-
-	Configuring Motion:\\
-	sudo vim /etc/motion/motion.conf\\
-	daemon on\\
-	stream\_localhost off\\
-	if problems with freezing if motion occures\\
-	output\_pictures off\\
-	ffmpeg\_output\_movies off\\
-	optional\\
-	stream\_maxrate 100\\
-	framerate 100\\
-	width 640\\
+	\item install:
+	\begin{verbatim}
+	sudo apt-get install libmariadbclient18 libpq5 libavcodec57  libavformat57 libavutil55 libswscale4
+	\end{verbatim}
+	einige Pakete sind outdated und müssen durch aktuelle ersetzt werden:
+	\begin{verbatim}	
+	sudo apt install libx264-148 libavcodec57 libavformat57 libmariadbclient-dev-compat \	
+	default-libmysqlclient-dev libswscale
+	\end{verbatim}
+	\item download motion stretch deb
+	\begin{verbatim}
+	sudo wget https://github.com/Motion-Project/motion/releases/download/release-4.0.1/pi
+	_stretch_motion_4.0.1-1_armhf.deb
+	sudo dpkg -i pi_stretch_motion_4.0.1-1_armhf.deb
+	\end{verbatim}
+	Motion konfigurieren
+	\begin{verbatim}	
+	sudo vim /etc/motion/motion.conf
+	daemon on
+	stream_localhost off
+	if problems with freezing if motion occures
+	output_pictures off
+	ffmpeg_output_movies off
+	optional
+	stream_maxrate 100
+	framerate 100
+	width 640
 	height 480
-
-	\item setup daemon\\
-	sudo vim /etc/default/motion\\
-	start\_motion\_daemon=yes
+	\end{verbatim}
+	
+	\item setup daemon
+	\begin{verbatim}
+	sudo vim /etc/default/motion
+	start_motion_daemon=yes
+	\end{verbatim}
 \end{enumerate}
 
-start stop motion and streaming by:\\
-sudo service motion start\\
-sudo service motion stop\\
-
-check browser in local network, xxx ip adress of raspi (ip addr show):\\
+\textbf{Start \& Stopp Motion und Streaming}
+\begin{verbatim}
+sudo service motion start
+sudo service motion stop
+\end{verbatim}
+Browser zur Anzeige im lokalen Netzwerk (Ip Adresse des Raspberry)\\
 192.168.1.xxx:8081
-
-How to test if video and avi works at all:\\
-Test raspi video codex and sound from avi video\\
-omxplayer -p -o local dolbycanyon.avi\\
--o local = headphone jack
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{ffmpeg, ffserver, ffplay}
-\textbf{Linux / Raspian ffmpeg mit alsa} %and pi\_jessie\_motion}
+\textbf{ffmpeg mit alsa auf Raspberry }
 
-Die ffmpeg Pakete vom APT-Paketmanager enthalten keinen Support für alsa...
+Um Audio mit ffmpeg zu verwenden, wird häufig \textbf{alsa} verwendet. Die ffmpeg Pakete vom APT-Paketmanager (arm-hf) enthalten keinen Support für alsa, d.h. sie wurden nicht mit der Abhängigkeit zu alsa kompiliert.
    
 REWORK in GERMAN:\\
 No, unfortunately not. You must recompile ffmpeg to add enable additional libraries. Below is the script I build to compile ffmpeg with alsa, fdk-aac, and libx264 support. It will install ffmpeg in your home folder inside a "ffmpeg" folder, so you'll need to call it specifically from there unless you add it to your path. I recommend uninstalling your current ffmpeg before using my script.
 
 Btw, I am able to stream directly to YouTube now without any issues. I use an external USB sound card and the PiCam v2 and stream a 1920x1080@25fps video stream with a 192kbps stereo audio stream mixed in. It works great!
 
-\subsection{Installation von FFmpeg aus Source-Code}
+\textbf{Installation von FFmpeg aus Source-Code}
 Wichtige Info: ffserver wurde beim Upgrade auf ffmpeg Version 4.0 gelöscht. Letzte Version mit ffserver ist 3.4. Daher git checkout 3.4! Wenn ffplay mitkompiliert werden soll muss zuerst sdl installiert werden:
 \begin{verbatim}
   sudo apt install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev \
@@ -135,7 +127,6 @@ Für libmp3lame > 3.88 bitte zusätzlich installieren:
 
 Siehe auch:\\
 http://computingvoyage.com/2114/installing-sdl2-on-raspbian-jessie/
-
 \begin{verbatim}
 #!/bin/bash
 # ffmpeg install script by Schenk/Omid
@@ -258,6 +249,25 @@ Auswahl nicht Codec abhängiger Parameter mit moderner Schreibweise. Viele Tutor
 -metadata  add a key=value metadata
 \end{verbatim}
 
+\subsection{Video Formate der Kameras}
+Wenn ein nicht unterstütztes Video Format angegeben wird bricht gstreamer ab und zeigt den Fehler
+\begin{verbatim}
+v4l2src0: Internal data stream error.
+\end{verbatim}
+
+Vor Auswahl eines Bildformates alle unterstützten Formate 
+abfragen:
+\begin{verbatim}
+v4l2-ctl --list-formats-ext
+\end{verbatim}
+
+oder über USB Geräte die Kennung und danach all Höhen und Breiten abfragen.
+\begin{verbatim}
+lsusb
+> Bus 001 Device 016: ID 046d:082d Logitech, Inc. HD Pro Webcam C920
+lsusb -s 001:016 -v | egrep "Width|Height"
+\end{verbatim}
+
 \subsection{ffmepg Tests}
 Als erster Test kann ffmpeg dazu verwendet werden Videos mit oder ohne Audio zu speichern.\\
 Dabei traten beim .ogg Format ungewöhnliche Speed-Ups oder Sprünge statt. Mp4 ist von 
@@ -301,7 +311,7 @@ Test mit Video und Audio (audio delay 0.3s):
   -r 45 -f avi -c:v mpeg4 -vtag xvid -c:a libmp3lame -b:a 96k output.avi
 \end{verbatim}
 
-\subsection{Streaming}
+\subsection{Streaming Audio \& Video}
 Live-Stream to YouTube (YouTube Account nötig):
 \begin{verbatim}
   ffmpeg -f v4l2 -i /dev/video0 -ar 44100 -ac 2 -acodec pcm_s16le -f alsa -ac 2 \
@@ -356,4 +366,6 @@ Start ffserver und ffmpeg:
   ffmpeg -f v4l2 -i /dev/video0 -vcodec libtheora http://localhost:9090/feed1.ffm
 \end{verbatim}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 

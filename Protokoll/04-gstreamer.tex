@@ -1,4 +1,3 @@
-\newpage
 \section{Gstreamer}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -15,46 +14,39 @@ fehlende Pakete installieren, am Beispiel Ubuntu (Rapian Debian):
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{I/O Elemente}
+\textbf{I/O Elemente}
 Ein Gstreamer Befehl ist aus einer Kette von Plugins aufgebaut. Die Verkettung der Befehle startet mit ein oder mehreren \textbf{src} Plugins und endet mit einem oder mehreren \textbf{sink} Plugins. Es folgt eine List mit src und sink Plugins.\\
 
-\textbf{Eingangs oder SRC-Elemente}
+\textbf{Beschreibung der verwendeten Eingangs oder SRC-Elemente}
 \begin{itemize}
 \item v4l2src – stream from a camera device on a linux system, e.g. device=/dev/video0;
-\item fdsrc – use in conjunction with unix pipes, uses as input the output of other programs such as raspicam on a Raspberry Pi;
 \item audiotestsrc – used to do test streams with audio;
 \item videotestsrc – used to do test streams with video, you may specify a pattern=<num>;
 \item fakesrc – another option for testing by feeding in an empty stream;
 \item filesrc – stream from a file, specifiy location=<filepath>;
-\item udpsrc – stream from a UDP stream, specify port=<number>;
-\item tcpclientsrc – stream from a TCP (HTTP) stream, specify port=<number>;
-\item rtmpsrc – stream from RTMP stream, specify port=<number>;
 \item ximagesrc – capture screen.
 \end{itemize}
 
 \textbf{Ausgabe oder SINK Elemente}
 \begin{itemize}
 \item filesink – save stream to a file, specify location=<filepath>;
-\item  audoaudiosink – play audio on an automatically detected device;
-\item   autovideosink – play video on an automatically detected display utility and device;
-\item   fakesink – do not play stream, just finish;
+\item  autoaudiosink – play audio on an automatically detected device;
+\item  autovideosink – play video on an automatically detected display utility and device;
+\item  fakesink – do not play stream, just finish;
 \item  udpsink – stream result over UDP, specify host=<IP of the target server> and port=<number>;
-\item   multiudpsink
-\item  tcpserversink – stream result over TCP (HTTP), specify host=<IP of the target server> and port=<number>;
 \item rtmpsink – stream result over RTMP, specify host=<IP of the target server> and port=<number>.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Kodierungselemente}
-Encoding a raw data stream and decoding encoded data into raw data is a big part of using gstreamer and dealing with media in general. Audio data can be encoded to various formats such as MP3, AAC, Vorbis and Opus. Video can be encoded among others as JPEG 2000, H.264, H.265, MPEG-2, VP8, VP9 and Theora. Gstreamer offers the possibilities to encode/decode in these formats through is bundle of plugins. These plugin bundles are the base, good, bad and ugly plugins.
-\\
+\textbf{Kodierungselemente}
+Encoding a raw data stream and decoding encoded data into raw data is a big part of using gstreamer and dealing with media in general. Audio data can be encoded to various formats such as MP3, AAC, Vorbis and Opus. Video can be encoded among others as JPEG 2000, H.264, H.265, MPEG-2, VP8, VP9 and Theora. Gstreamer offers the possibilities to encode/decode in these formats through is bundle of plugins. These plugin bundles are the base, good, bad and ugly plugins.\\
 
 \textbf{Audio}
 \begin{itemize}
 \item mp3 – lamemp3enc, avenc\_mp3 | mad, mpg123audiodec, avdec\_mp3; 
-\item  aac – voaccenc, faac, avenc\_aac | faad, aacparse, avdec\_aac;
-\item  vorbis – vorbisenc | vorbisdec, vorbisparse;
-\item  opus – opusenc, avenc\_opus | opusdec, avdec\_opus.
+\item aac – voaccenc, faac, avenc\_aac | faad, aacparse, avdec\_aac;
+\item vorbis – vorbisenc | vorbisdec, vorbisparse;
+\item opus – opusenc, avenc\_opus | opusdec, avdec\_opus.
 \end{itemize}
 
 \textbf{Video}
@@ -68,7 +60,10 @@ Encoding a raw data stream and decoding encoded data into raw data is a big part
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Mögichkeiten oder ‘caps’ Elemente}
+\textbf{Möglichkeiten oder ‘caps’ Elemente}
+
+Siehe web tutorial, sehr gute Beschreibung,,, wo man die receiver caps herbekommt....\\
+
 Capabilities (short: caps) describe the type of data that is streamed between two pads (elements), or the one that a pad (template) supports. Capsfilters or \textbf{caps} do not modify data as such, but can enforce limitations on the data format. They ensure compatibility between elements. If for example a media stream is available in several formats, they can specify just one which is understandable by the next element in the pipeline. Capabilities can be very complex and specify all types of characteristics although that is often not required. Most often we should specify the type of encoding of the stream we receive or send.\\
 
 Beispiele\\
@@ -81,16 +76,14 @@ Legt für das Video den Pakettyp auf RTP und das Encoding auf VP8 fest.
   ! application/x-rtp, encoding-name=VP8 !
 \end{verbatim}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Other elements}
+Weitere Bestandteile der Pipeline
 \begin{itemize}
 \item \textbf{Muxers/Demuxers} – These elements encapsulate (pair) video and audio in a common container. Common formats are mp4, webm, ogg, mov.
 E.g.:  mp4mux/qtdemux, webmmux/matroskademux.
 \item \textbf{Payers/Depayers} – These elements prepare (payload) data prior and after it is transported over the Internet.
-E.g.: rptvp8pay/rtpvp8depay,  rtph264/rtph264depay gdppay/gdpdepay.
+E.g.: rptvp8pay/rtpvp8depay,  rtph264/rtph264depay \textbf{*** hier raw...***}
 \item \textbf{Converters} – These elements perform data manipulations like rotation, color change, modulation and cropping.
 E.g.: audioconvert, audioresample, videoconvert, videoscale.
-\item \textbf{Pipeline} – These elements are used in constructing more complex pipelines. E.g.: tee, queue2.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -114,23 +107,23 @@ Webcam oder intergrierte Kamera:
   gst-launch-1.0 audiotestsrc ! audioconvert ! fakesink
 \end{verbatim}
 
-\textbf{Video Test broadcast over TCP/HTTP}
+\textbf{Video Test Broadcast über TCP/HTTP}
 \begin{verbatim}
 Sender
   gst-launch-1.0 videotestsrc horizontal-speed=5  ! vp8enc ! gdppay ! \
     tcpserversink host=127.0.0.1 port=5200
-Receiver
+Empfänger
   gst-launch-1.0 -v tcpclientsrc port=5200 ! gdpdepay ! vp8dec ! \
     videoconvert ! autovideosink
 \end{verbatim}
 
-\textbf{Video Broadcast über RTP (via UDP) von Webcam}
+\textbf{Video Broadcast über RTP (via UDP) von der Webcam}
 \begin{verbatim}
 Sender
   gst-launch-1.0 v4l2src ! videoconvert ! video/x-raw, width=640,height=480 ! \
     omxh264enc ! rtph264pay pt=96 config-interval=1 ! \
     udpsink host=192.168.2.106 port =8554
-Receiver
+Empfänger
   gst-launch-1.0 udpsrc port=8554 caps="application/x-rtp,media=video,\
     clockrate=90000,payload=96,encoding-name=H264" ! \
     rtph264depay ! avdec_h264 ! autovideosink
@@ -138,11 +131,6 @@ Receiver
 
 \textbf{Video mit synthetischem Audio}
 \begin{verbatim}
-Reciever
-  gst-launch-1.0 udpsrc port=5001 ! application/x-rtp, clock-rate=44100, payload=97 ! 
-    rtpL16depay ! audioconvert ! alsasink sync=false udpsrc port=5000 
-    caps="application/x-rtp,media=video,payload=96,encoding-name=H264" ! rtph264depay !     
-    avdec_h264 ! autovideosink
 Sender:
   gst-launch-1.0 -v audiotestsrc ! audioconvert ! \
     audio/x-raw,channels=1,depth=16,width=16,rate=44100 ! rtpL16pay pt=97 ! \
@@ -150,35 +138,21 @@ Sender:
     video/x-raw, width=640,height=480 ! omxh264enc ! \
     rtph264pay pt=96 config-interval=1 ! \
     udpsink host=192.168.178.29 port=5000
-\end{verbatim}
-
-\subsection{Video Formate der Kameras}
-Wenn ein nicht unterstütztes Video Format angegeben wird bricht gstreamer ab und zeigt den Fehler
-\begin{verbatim}
-v4l2src0: Internal data stream error.
-\end{verbatim}
-
-Vor Auswahl eines Bildformates alle unterstützten Formate 
-abfragen:
-\begin{verbatim}
-v4l2-ctl --list-formats-ext
-\end{verbatim}
-
-oder über USB Geräte die Kennung und danach all Höhen und Breiten abfragen.
-\begin{verbatim}
-lsusb
-> Bus 001 Device 016: ID 046d:082d Logitech, Inc. HD Pro Webcam C920
-lsusb -s 001:016 -v | egrep "Width|Height"
+Empfänger
+  gst-launch-1.0 udpsrc port=5001 ! application/x-rtp, clock-rate=44100, payload=97 ! 
+    rtpL16depay ! audioconvert ! alsasink sync=false udpsrc port=5000 
+    caps="application/x-rtp,media=video,payload=96,encoding-name=H264" ! rtph264depay !     
+    avdec_h264 ! autovideosink
 \end{verbatim}
 
 \subsection{Kamera \& Mikrofon Streaming}
 Erster Kamera Test:
 \begin{verbatim}
-gst-launch-1.0 v4l2src ! xvimagesink
-gst-launch-1.0 v4l2src ! jpegdec ! xvimagesink
+  gst-launch-1.0 v4l2src ! xvimagesink
+  gst-launch-1.0 v4l2src ! jpegdec ! xvimagesink
 \end{verbatim}
 
-\textbf{Video and Audio over RTP (via UDP) from Webcam}
+\textbf{Video und Audio einer Webcam über RTP (in UDP Paketen)}
 \begin{verbatim}
 Sender
   gst-launch-1.0 -v alsasrc device=plughw:CARD=StudioTM,DEV=0 ! \
@@ -186,15 +160,14 @@ Sender
     rtpL16pay pt=97 ! udpsink host=192.168.178.29 port=5001 v4l2src ! \
     videoconvert ! video/x-raw, width=640,height=480 ! omxh264enc ! \
     rtph264pay pt=96 config-interval=1 ! udpsink host=192.168.178.29 port=5000
-Receiver
+Empfänger
   gst-launch-1.0 udpsrc port=5001 ! application/x-rtp, clock-rate=44100,\
     payload=97 ! rtpL16depay ! audioconvert ! alsasink sync=false udpsrc \
     port=5000 caps="application/x-rtp,media=video,payload=96,encoding-name=H264" ! \
     rtph264depay ! avdec_h264 ! autovideosink
 \end{verbatim}
 
-
-\textbf{Raspi WebCam C920 Video/Audio via RTP (UDP) an Webserver}
+\textbf{Raspi WebCam C920 Video/Audio an Webserver via RTP (UDP)}
 \begin{verbatim}
 Sender
   gst-launch-1.0 -v alsasrc device=plughw:1,0 ! audioconvert \
@@ -263,7 +236,7 @@ ip = ...server-addr-ip-hostname
 admin_http = yes
 \end{verbatim}
 
-funkst noch nicht\\
+**** replace with working configs funkst noch nicht\\
 janus.plugin.streaming.cfg
 \begin{verbatim}
 [gst-rpwc]
@@ -283,17 +256,16 @@ videofmtp = profile-level-id=42e028\;packetization-mode=1
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{nginx Webserver}
-Installation von nginx webserver\\
-
-nach: https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04
+Installation von nginx Webserver zum Webseiten Testen in lokalem Netzwerk\\
+Frei nach: https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04
 \begin{verbatim}
-sudo apt-get update
-sudo apt-get install nginx
-sudo ufw app list
+  sudo apt-get update
+  sudo apt-get install nginx
+  sudo ufw app list
 \end{verbatim}
 
 You should get a listing of the application profiles:\\
-Output
+Terminal Ausgabe
 \begin{verbatim}
 Available applications:
   Nginx Full
@@ -302,40 +274,38 @@ Available applications:
   OpenSSH
 \end{verbatim}
 
-We will only need to allow traffic on port 80.\\
-You can enable this by typing:
+Es ist meistens nötig Traffic auf dem Port 80 zu erlauben.\\
+Man kann es konfigurieren mittels:
 \begin{verbatim}
-sudo ufw allow 'Nginx HTTP'
-
-sudo ufw status
-http://server_domain_or_IP
+  sudo ufw allow 'Nginx HTTP'
+  sudo ufw status
+  http://server_domain_or_IP
 \end{verbatim}
 
-Copy nginx examples from janus to /usr/share/nginx/html/demos
+nginx Beispiele von janus nach /usr/share/nginx/html/demos kopieren
 \begin{verbatim}
-sudo cp -r /opt/janus/share/janus/demos /usr/share/nginx/html/
+  sudo cp -r /opt/janus/share/janus/demos /usr/share/nginx/html/
 \end{verbatim}
-check browser: http://ip-server
-at start only index from var/www/html/ is shown
+Im Browser unter http://ip-server/demos
+wird trotzdem nur die Platzhalter Webseite angezeigt.
 
-change in: /etc/nginx/sites-available
+Um auf die kopierten Janus Webseiten zuzugreifen, muss noch etwas in der nginx Konfiguration geändert werden: /etc/nginx/sites-available
 \begin{verbatim}
  #root /var/www/html;
  root /usr/share/nginx/html;
 \end{verbatim}
-So janus example html files can be loaded, e.g.\\
+Nun können die  Janus Beispiel html Dateien geladen werden.\\
 http://192.168.178.25/demos/\\
 
-Admin Monitor is only available by pwd...\\
-enter das Password aus /opt/janus/etc/janus/janus.cfg\\ 
-admin\_secret = janusoverlord
+Der Admin Monitor ist nur nach Eingabe eine Passwort verfügbar...\\
+Entweder das Passwort aus /opt/janus/etc/janus/janus.cfg verwenden (admin\_secret = janusoverlord) oder einfach wie folgt anpassen:
 \begin{verbatim}
 /usr/share/nginx/html/demos/admin.js
 line 14
 var secret = "janusoverlord";
 \end{verbatim}
-after that no pwd is requested anymore\\
-open in browser:
+Danach ist das Passwort schon voreingestellt und wird nicht mehr abgefragt.\\
+Nun kann der Admin Bereich im Browser geöffnet werden:
 \begin{verbatim}
 http://ip-server/demos
 \end{verbatim}
