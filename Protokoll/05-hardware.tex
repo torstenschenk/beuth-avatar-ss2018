@@ -23,6 +23,29 @@ Danach ist es möglich über ssh einzuloggen.
   pwd: xxxxxxxxxx (pwd vom Provider)
 \end{verbatim}
 
+\textbf{Raspberry Touchscreen Anzeige per Software Drehen}
+Wenn das Raspberry 7\grqq{} Display ins Gehäuse eingebaut wird ist die 
+Visualisierung des Desktops 180 Grad verdreht. Es müssen Bildschirmanzeige 
+und Toucherkennung gedreht werden. Softwaretechnisch sind dies zwei verschiedene 
+Dinge.\\
+
+\textbf{RASPIAN OP}\\
+Display \& Touchscreen können mit einem Befehl rotiert werden, 
+bitte in /boot/config.txt eintragen:
+\begin{verbatim}
+  lcd_rotate=2
+\end{verbatim}
+
+\textbf{Andere OP}\\
+Hier wird mittels des lcd\_display Befehls nur der Touchbildschrim 
+gedreht. Es kann xrandr verwendet werden um zusätzlich die visuelle Darstellung zu 
+um 180 Grad zu drehen. Display Infos \& drehen:
+\begin{verbatim}
+  xrandr -q
+  xrandr --output HDMI-1 --rotate inverted
+\end{verbatim}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Strato Web Server}
 \textbf{Login via ssh}

@@ -87,9 +87,11 @@ E.g.: audioconvert, audioresample, videoconvert, videoscale.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Testkommandos für synthetisches Video und Audio}
+\subsection{Gstreamer Tests für Video \& Audio}
 
-\textbf{Video Test Source zum Display}
+\textbf{Synthetische Quellen}
+
+Video Test Source zum Display
 \begin{verbatim}
 Testbild:
   gst-launch-1.0 videotestsrc pattern=1 ! videoconvert ! autovideosink
@@ -97,17 +99,17 @@ Webcam oder intergrierte Kamera:
   gst-launch-1.0 autovideosrc device=/dev/video0 ! autovideosink
 \end{verbatim}
 
-\textbf{Audio Test Source zum Lautsprecher}
+Audio Test Source zum Lautsprecher
 \begin{verbatim}
   gst-launch-1.0 audiotestsrc ! audioconvert ! autoaudiosink
 \end{verbatim}
 
-\textbf{Audio Test Quelle zu Fake Sink, aber trotzdem vollständige Pipeline}
+Audio Test Quelle zu Fake Sink, aber trotzdem vollständige Pipeline
 \begin{verbatim}
   gst-launch-1.0 audiotestsrc ! audioconvert ! fakesink
 \end{verbatim}
 
-\textbf{Video Test Broadcast über TCP/HTTP}
+Video Test Broadcast über TCP/HTTP
 \begin{verbatim}
 Sender
   gst-launch-1.0 videotestsrc horizontal-speed=5  ! vp8enc ! gdppay ! \
@@ -178,22 +180,8 @@ Sender
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{gstreamer C Programme \& Tutorials selbst kompilieren}
-
-Wenn Fehler beim Compilieren eines gstream Testprogramms auftreten, z.B.
-\begin{verbatim}
-  Package gstreamer-1.0 was not found in the pkg-config search path.
-  Perhaps you should add the directory containing `gstreamer-1.0.pc'
-  to the PKG_CONFIG_PATH environment variable
-  No package 'gstreamer-1.0' found
-  playback-tutorial-6.c:1:10: fatal error: gst/gst.h: No such file or directory
-\end{verbatim}
-
-\textbf{Compiler Befehl für Beispiel 6}\\
-gcc playback-tutorial-6.c -o playback-tutorial-6 `pkg-config --cflags --libs gstreamer-1.0`
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{janus - gateway - pipeline}
+\section{Janus-Gateway}
+Was issn das????
 
 \subsection{Installation von Janus}
 \begin{verbatim}

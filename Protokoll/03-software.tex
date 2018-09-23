@@ -1,30 +1,6 @@
-\newpage
-\section{Software}
+\section{Software Helfer}
+Kurze Beschreibung der Software Hilfsprogramme
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Raspberry Touchscreen Anzeige per Software Drehen}
-Wenn das Raspberry 7\grqq{} Display ins Gehäuse eingebaut wird ist die 
-Visualisierung des Desktops 180 Grad verdreht. Es müssen Bildschirmanzeige 
-und Toucherkennung gedreht werden. Softwaretechnisch sind dies zwei verschiedene 
-Dinge.\\
-
-\textbf{RASPIAN OP}\\
-Display \& Touchscreen können mit einem Befehl rotiert werden, 
-bitte in /boot/config.txt eintragen:
-\begin{verbatim}
-  lcd_rotate=2
-\end{verbatim}
-
-\textbf{Andere OP}\\
-Hier wird mittels des lcd\_display Befehls nur der Touchbildschrim 
-gedreht. Es kann xrandr verwendet werden um zusätzlich die visuelle Darstellung zu 
-um 180 Grad zu drehen. Display Infos \& drehen:
-\begin{verbatim}
-  xrandr -q
-  xrandr --output HDMI-1 --rotate inverted
-\end{verbatim}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Paket Manager}
 Pakete auf aktuellem Stand halten
 \begin{verbatim}
@@ -34,6 +10,25 @@ Pakete auf aktuellem Stand halten
 
   z.B. Firefox für Raspi instalieren
   sudo apt install firefox-esr
+\end{verbatim}
+
+\subsection{Video Formate der Kameras}
+Wenn ein nicht unterstütztes Video Format angegeben wird bricht gstreamer ab und zeigt den Fehler
+\begin{verbatim}
+v4l2src0: Internal data stream error.
+\end{verbatim}
+
+Vor Auswahl eines Bildformates alle unterstützten Formate 
+abfragen:
+\begin{verbatim}
+v4l2-ctl --list-formats-ext
+\end{verbatim}
+
+oder über USB Geräte die Kennung und danach all Höhen und Breiten abfragen.
+\begin{verbatim}
+lsusb
+> Bus 001 Device 016: ID 046d:082d Logitech, Inc. HD Pro Webcam C920
+lsusb -s 001:016 -v | egrep "Width|Height"
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -247,25 +242,6 @@ Auswahl nicht Codec abhängiger Parameter mit moderner Schreibweise. Viele Tutor
 -vol       change the volume of the audio
 -g         Gop size (distance between keyframes)
 -metadata  add a key=value metadata
-\end{verbatim}
-
-\subsection{Video Formate der Kameras}
-Wenn ein nicht unterstütztes Video Format angegeben wird bricht gstreamer ab und zeigt den Fehler
-\begin{verbatim}
-v4l2src0: Internal data stream error.
-\end{verbatim}
-
-Vor Auswahl eines Bildformates alle unterstützten Formate 
-abfragen:
-\begin{verbatim}
-v4l2-ctl --list-formats-ext
-\end{verbatim}
-
-oder über USB Geräte die Kennung und danach all Höhen und Breiten abfragen.
-\begin{verbatim}
-lsusb
-> Bus 001 Device 016: ID 046d:082d Logitech, Inc. HD Pro Webcam C920
-lsusb -s 001:016 -v | egrep "Width|Height"
 \end{verbatim}
 
 \subsection{ffmepg Tests}
