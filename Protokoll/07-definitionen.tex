@@ -45,18 +45,40 @@ Beschreibung von h264 Nutzen...
 
 \begin{minipage}{\textwidth}
     \begin{center}
-        Caption for image
         \includegraphics[scale=4.0]{img/h264.jpg} 
     \end{center}
-\end{minipage}
+\end{minipage}\\
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Vergleich der Formate}
+...
 
-\subsection{RTMP versus WebRTC}
-RTMP/RTSP are better for livestreaming in ‘live’ meaning. We can easily reduce the latency of RTMP or RTSP to around 1 second with just some simple setup and a good connection to the server, many streaming apps are using RTMP protocol nowaday. The only and biggest weakness of RTMP is it requires Flash and is not easily to be integrated into a website\\
+\section{Vergleich der Streaming-Lösungen und Tests}
+Die Ergebnisse der Versuche wurden übersichtlich in Tabelle 1 zusammengefasst. Von den Ergebnissen ausgehend, wurde die gstreamer Bibliothek für das Streaming vom emb. System ausgewählt und ffmpeg für das zurückstreamen. Gstreamer schien ungeeignet für das zurückstreamen zu sein, da die CPU Leistung des emb. Systems nicht ausreichte, um die Frames auszupacken. Selbst unkomprimierte RAW Frames konnten nicht die Anforderung erfüllen, siehe gstreamer Kapitel 8.
 
-WebRTC is something called the future for livestreaming, it is a peer-to-peer protocol which can reach ‘realtime’ latency for livestreaming(under 1 second). The weakness of WebRTC is it is hard when we need scaling, currently it is just approriate livestreaming in online meeting which require a small value of peers. There are many solution to overcome this, such as a hybrid solution combining WebRTC for input and RTMP/HLS/DASH for output.
+\begin{table}[H]
+\centering
+ \begin{tabular}{l|c|c|c}
+ \textbf{Streamingtest}&\textbf{Audiodelay [s]}&\textbf{Videodelay [s]} & \textbf{CPU load [\%]}\\
+\cline{1-4} 
+ Testaudio gstreamer PC an localhost          & instant   & --    & --\\
+ Testaudio gstreamer emb. System an localhost & instant   & --    & emb.3\\
+ Testbild gstreamer PC an localhost           & --        & instant & -- \\
+ Testbild gstreamer emb. System an localhost  & --        & instant & emb.20 \\                        
+ Audio gstreamer PC an localhost              & instant   & --    & x\\
+ Audio gstreamer emb. System an localhost     & instant   & --    & x\\
+ Video gstreamer PC an localhost              & --        & 0.1   &  \\
+ A/V gstreamer PC an emb.System               & 0.1       & 0.1   & emb.30 \\
+ A/V gstreamer emb.Sys an PC                  & ? 20+     & ? 20+ & emb.100\\ 
+ \cline{1-4}
+ Audio PC ffmpeg - ffplay (localhost)            & 0.2   & --   & --  \\
+ Audio PC ffmpeg - ffserver - ffplay (localhost) & 0.4   & --   & --  \\
+ Video PC ffmpeg - ffserver - ffplay (localhost) & --   & 1.4  & -- \\
+ A/V PC ffmpeg - fserver zu emb.Sys. ffplay     & 1.5    & 1.5  & emb.100 \\
+\end{tabular}
+
+     \caption{Streaming Delayzeiten}
+     \label{tbl:beispieltabelle}
+     % Verweis im Text mittels \ref{tbl:beispieltabelle}
+   \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage

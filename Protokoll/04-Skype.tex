@@ -1,8 +1,8 @@
 \section{Skype}
-
+Skype ist bekannt als Audio- und Videostreaming Lösung, die unter Windows und Linux verwendet werden kann. Es sollte getestet werden, um eine Vergleichsbasis für unsere implementierte Lösung zu haben.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Installation}
-Configure host Raspbian system:
+Konfiguration des Raspian Klienten:
 \begin{verbatim}
 1.Install and configure PulseAudio.
   sudo apt-get install pulseaudio
@@ -46,7 +46,7 @@ Jetzt befinden Sie sich in der x86-Umgebung, die durch Ausführung des Befehls
 \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Install Skype}
+\textbf{Skype Installieren}
 \begin{verbatim}
 7.Laden Sie Skype für Debian herunter:
   wget http://download.skype.com/linux/skype-debian_4.3.0.37-1_i386.deb
@@ -55,16 +55,13 @@ Jetzt befinden Sie sich in der x86-Umgebung, die durch Ausführung des Befehls
   sudo sed -i 's/4\.3\.0\.37/8\.3\.0\.37/' /usr/bin/skype 
 \end{verbatim}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textbf{Führen Skype aus}
-\begin{verbatim}
-Überprüfen Sie, ob Skype-Soundgeräte den PulseAudio-Server verwenden:
-\end{verbatim}. 
+\textbf{Skype ausführen}\\
+Überprüfen Sie, ob Skype-Soundgeräte den PulseAudio-Server verwenden:\\
+
 \begin{minipage}{\textwidth}
     \begin{center}        
         \includegraphics[scale=0.4]{img/skype-option.png} 
     \end{center}
 \end{minipage}
-\\
 
-Jetzt können Sie Ihre Skype-Anrufe tätigen.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
