@@ -1,33 +1,45 @@
 \section{Vorwort}
-Selbst bearbeitet Info...
-
-Die \textbf{englischen} Bezeichner und Beschreibung von Flags und Optionen wurde beibehalten, da diese auch in den man-pages Verwendung findet und in Internet-Foren fast immer verwendet wird.
+Bei der Recherche zur Bearbeitung des Projektes wurden viele englische Webseiten zu rate gezogen. Viele englische Fachbegriffe haben sich im Bereich Software durchgesetzt, so dass 
+eine Übersetzung eher verwirren als helfen würde. Die \textbf{englischen} Bezeichner und Beschreibungen von Flags und Optionen wurde beibehalten, da diese auch in den man-pages Verwendung finden und in Internet-Foren vorrangig anzutreffen sind.
 
 \section{Projektbeschreibung}
-
-Beschreibung des Projektes...\\
-
-Jolandi Workerbot der Firma pi4\_robotics GmbH\\
-
+Das erklärte Ziel der pi4\_robotics GmbH Berlin ist es humanoide Roboter zu entwickeln. 
+Diese können bereits in unterschiedlichen Branchen eingesetzt werden. Im Werbeblatt 
+des Workerbot4 (siehe Anhang, Kapitel 13) werden die Basisfähigkeiten des Jolandi Workerbot beschrieben.  \\
+Bisher ist das Anlernen neuer Tätigkeiten und die Bedienung nur über eine PC-Schnittstelle möglich, doch das soll sich ändern. Es ist geplant Spracherkennung und visuelle Wahrnehmung 
+zu integrieren. Um mit dem Roboter wie mit einem Menschen kommunizieren zu können. Auch soll 
+ein Avatar Modus implementiert werden, bei dem der User in die Rolle des Roboters schlüpft 
+und per Teleoperation den Roboter bewegt, hört was der Roboter hört und mit den Augen des Roboters sieht. \\
+Für den Einsatz als Sicherheitspersonal ist weiterhin geplant, die Stimme des Bedieners aus dem Roboter Lautsprecher ertönen zu lassen und sein Gesicht auf dem Kopfdisplay anzuzeigen. 
+Der Kunde soll das Gefühl haben, dass der Roboter der Avatar des Bedieners ist.\\
+Für die Laborübungen 'Entwurf eingebetteter Systeme' und 'Netzwerk-Programmierung' wurde 
+bidirektionale Ton und Video Übertragung ausgewählt. Dabei galt es Audio und Video 
+\textbf{mehrerer} Roboter auf eine Webseite zu streamen und eine Webcam inklusive Ton des PC 
+auf alle verbundenen Roboter zurück zu streamen.\\
 \begin{minipage}{\textwidth}
     \begin{center}
-        
         \includegraphics[scale=0.5]{img/jolandi.jpg} 
     \end{center}
 \end{minipage}
-
+\begin{center}
+Jolandi Workerbot der Firma pi4\_robotics GmbH
+\end{center}
  
-Komplett System zum Avatar Modus besteht aus...\\
-
 \begin{minipage}{\textwidth}
-    \begin{center}
-        
+    \begin{center}        
         \includegraphics[scale=0.4]{img/schemaproj.png} 
     \end{center}
 \end{minipage}
-
-Beschreibung der Schritte zum erreichen des Projektes
-
+\begin{center}
+Schemaplan der Komponenten
+\end{center}
+Links auf dem Schemaplan sind die in Robotern integrierten eingebettete Systeme gezeigt. Pro Roboterkopf ist ein Raspberry PI mit Touch-Display verbaut. Für das Projekt wurde jeweils eine Webcam für Ton und Video angeschlossen. Die Tonwiedergabe erfolgt über einen USB Lautsprecher. \\
+Auf der rechten Seite des Plans ist der Bediener PC dargestellt. Auch hier liefert eine Webcam Ton und Video. Ton wird über die PC Lautsprecher ausgegeben.\\
+Für den Bediener soll ein Web-Template erstellt werden. Dort kann ausgewählt werden, welcher Videostreams angezeigt werden soll. Der Zeitversatz bei der Übertragung soll sehr gering sein 
+(<0.2sec), damit der User möglichst schnell reagieren kann. Bildübertragung zum eingebetteten System darf einen leichten Zeitversatz haben, da dort nur das Gesicht des Bedieners angezeigt wird, aber keine weiteren Handlungen davon abhängen.\\
+Das gesamte Streaming soll über das Internet erfolgen. Dabei ist der Datentransfer auch aus 
+fremden WLAN Netzen heraus zu realisieren. Fremd im Sinne, dass die dazwischen liegende Router und Ports nicht konfigurierten werden können. Die IP Adressen der Roboter sind damit quasi unbekannt, d.h. dynamisch wechselnd und nicht vom Internet aus sichtbar.\\
+ 
 
 \subsection{Streaming Basis Komponenten}
 Streaming live convent over the internet requires much more extra care than just providing web page content since a downtime in the service can significantly affect the image of the company and cause it to lose content consumers and advertisers. There are several services on the internet that provide services to reliably stream audio and video content over the internet. However these paid services can be very expensive due to the importance of the availability of the service. Nevertheless, there is a cheaper alternative which is secure and reliable at the same time to set up an audio and/or video stream service on your own.
