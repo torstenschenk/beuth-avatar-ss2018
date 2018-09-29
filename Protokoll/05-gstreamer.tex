@@ -1,4 +1,4 @@
-\section{Gstreamer}
+\section{Gstreamer} \label{RefGstreamer}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Installation}
@@ -38,9 +38,10 @@ Ein Gstreamer Befehl ist aus einer Kette von Plugins aufgebaut. Die Verkettung d
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\color{red}
 \textbf{Kodierungselemente}
 Encoding a raw data stream and decoding encoded data into raw data is a big part of using gstreamer and dealing with media in general. Audio data can be encoded to various formats such as MP3, AAC, Vorbis and Opus. Video can be encoded among others as JPEG 2000, H.264, H.265, MPEG-2, VP8, VP9 and Theora. Gstreamer offers the possibilities to encode/decode in these formats through is bundle of plugins. These plugin bundles are the base, good, bad and ugly plugins.\\
-
+\color{black}
 \textbf{Audio}
 \begin{itemize}
 \item mp3 – lamemp3enc, avenc\_mp3 | mad, mpg123audiodec, avdec\_mp3; 
@@ -60,6 +61,7 @@ Encoding a raw data stream and decoding encoded data into raw data is a big part
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\color{red}
 \textbf{Möglichkeiten oder ‘caps’ Elemente}
 
 Siehe web tutorial, sehr gute Beschreibung,,, wo man die receiver caps herbekommt....\\
@@ -85,7 +87,7 @@ E.g.: rptvp8pay/rtpvp8depay,  rtph264/rtph264depay \textbf{*** hier raw...***}
 \item \textbf{Converters} – These elements perform data manipulations like rotation, color change, modulation and cropping.
 E.g.: audioconvert, audioresample, videoconvert, videoscale.
 \end{itemize}
-
+\color{black}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Gstreamer Tests für Video \& Audio}
 
@@ -180,8 +182,8 @@ Sender
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Janus-Gateway}
-Was issn das????
+\section{Janus-Gateway} \label{RefJanus}
+Janus ist ein Server, der WebRTC Medien Kommunikation mit einem Browser unterstützt und json Nachrichten versendet. Zusätzlich können auch RTP/RTCP und Nachrichten zwischen Browsern und serverseitigen Programmen ausgetauscht werden. Plugins ermöglichen z.B. auch den Empfang von Streams im RTP/UDP Format versendet von Gstreamer. 
 
 \subsection{Installation von Janus}
 \begin{verbatim}
@@ -214,8 +216,7 @@ make shared_library && sudo make install
 Zum Streaming via gstreamer RTP muss noch die cfg Datei angepasst werden.\\
 Alle cfg Dateien liegen in: /opt/janus/etc/janus\\
 
-In Datei:\\
-janus.transport.http.cfg
+In Datei: janus.transport.http.cfg
 \begin{verbatim}
 [general]
 http = yes
@@ -224,7 +225,6 @@ ip = ...server-addr-ip-hostname
 admin_http = yes
 \end{verbatim}
 
-**** replace with working configs funkst noch nicht\\
 janus.plugin.streaming.cfg
 \begin{verbatim}
 [gst-rpwc]
@@ -243,7 +243,7 @@ videofmtp = profile-level-id=42e028\;packetization-mode=1
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{nginx Webserver}
+\subsection{nginx Webserver} \label{Refnginx}
 Installation von nginx Webserver zum Webseiten Testen in lokalem Netzwerk\\
 Frei nach: https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04
 \begin{verbatim}
@@ -299,7 +299,7 @@ http://ip-server/demos
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{gstreamer an janus}
+\subsection{gstreamer an janus} \label{RefGstrToJanus}
 Gstreamer Kommandos, um vom Raspberry V/A an das Janus-Gateway zu streamen\\
 Zwei verschiedene Webcams wurden gestetet. \\
 (1) Webcam HD Pro: CARD=C920,DEV=0 \\
