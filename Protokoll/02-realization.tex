@@ -6,56 +6,72 @@ Das Projekt wurde in Teil-Aufgaben realisiert:
 \item Inbetriebnahme aller Hardwarekomponenten
 
 \item Direktes Streamen von Audio und Video vom embedded System an PC
-\item Aufsetzen eines Webservers im lokalen Netzwerk, lokales hosting der Webseite
 \item Aufsetzen eines Streaming-Servers im lokalen Netzwerk
+\item Aufsetzen eines Webservers im lokalen Netzwerk, lokales hosting der Webseite
 \item Direktes Streamen von Audio und Video vom embedded System an Streaming-Server
 \item Anzeige des konvertierten Outputs des Streaming-Servers auf der Webseite
-
 \item Streamen der PC Webcam an lokalen Streaming-Server
 \item Zurück-Streamen vom Streaming-Server an embedded Hardware und Visualisierung
-
 \item Hochladen der Webseite auf eine Online-Webspace
 \item Aufsetzen eines Online-Streaming-Servers
 \end{itemize}
 
 \subsection{Inbetriebnahme der Hardware Komponenten}
-Am Anfang des Projektes wurden alle Hardwarekomponenten bestellt und getestet. Raspberry PI B3+, Touchdisplays, Gehäuse, USB Lautsprecher, Webkameras mit Mikrofon und MMC Karten, siehe Lastenheft auf www.trello.com (Gruppe 15) für eine detaillierte Hardwareaufstellung. Danach kam die Installation des Betriebssystems RASPIAN auf den Raspberry PI3+ Boards und die Konfiguration eines Zugangs über SSH, siehe Kapitel \ref{RefRaspi}. Für Audio und Video Tests wurden *.mp4 Files und *.wav Dateien abgespielt, siehe Kapitel \ref{RefLautsprecher}. WLAN befindet sich bereits bei PI3+ als Komponente auf dem Board und musste nur konfiguriert werden. Die Mikrofon Tests gestalteten sich anspruchsvoller und es wurden Facebook Chat und WebRTC Internet Beispiele verwendet.
+Am Anfang des Projektes wurden alle Hardwarekomponenten bestellt und getestet. Raspberry PI B3+, Touchdisplays, Gehäuse, USB Lautsprecher, Webkameras mit Mikrofon und MMC Karten, siehe Lastenheft auf www.trello.com (Gruppe 15) für eine detaillierte Hardwareaufstellung. Danach kam die Installation des Betriebssystems RASPIAN auf den Raspberry PI3+ Boards und die Konfiguration eines Zugangs über SSH, siehe Kapitel \ref{RefRaspi}. Kleine Nebenarbeiten waren das softwareseitige Drehen des Displays und Touchdisplays, sowie das Upgraden und Updaten der vorinstallierten Pakete.\\
+Für Audio und Video Tests wurden *.mp4 Files und *.wav Dateien abgespielt, siehe Kapitel \ref{RefLautsprecher}. WLAN befindet sich bereits bei PI3+ als Komponente auf dem Board und musste nur konfiguriert werden. Die Mikrofon Tests gestalteten sich anspruchsvoller und es wurden Facebook Chat und WebRTC Internet Beispiele verwendet.
 
-\subsection{Streamen vom embedded System > Server }
+\subsection{Streaming: embedded System > Server }
 Um A/V Streaming auf dem Raspberry zu starten, wurden ffmpeg und gstreamer mit den 
-vorkompilierten Paketen über den Paketmanager installiert. Wobei gstreamer den vollen Funktionsumfang (verglichen mit Ubuntu 18) hatte. Für Installationsanleitung und kompletter Liste der Testbefehle, siehe Kapitel \ref{RefGstreamer}. \\
-
+vorkompilierten Paketen über den Paketmanager installiert. Wobei gstreamer den vollen Funktionsumfang (verglichen mit Ubuntu 18) hatte. Für Installationsanleitung und kompletter Liste der Testbefehle zu gstreamer, siehe Kapitel \ref{RefGstreamer}. \\
 Die Verwendung von ffmpeg gestaltete sich jedoch problematisch. Die Pakete des Paketmanagers unterstützten weder ffserver noch ffplay und es fehlten Abhängigkeiten zu diversen Bibliotheken. Es war nötig ffmpeg aus den Quellen zu bauen, siehe Kapitel \ref{RefFFmpeg} mit Schritt für Schritt Anleitung und alle durchgeführten Tests. Bei der Installation stellte sich heraus, dass ffserver nicht mehr in der aktuellen Version 4 unterstützt wird und es wurde via Git die Version 3.5 ausgecheckt. Dies bewirkte eine Kettenabhängigkeit der x264 Bibliothek, deren Version nun ebenfalls herunter gesetzt werden musste. Schließlich stand eine voll funktionsfähige ffmpeg, ffserver und ffplay Version bereit.\\ 
 
-\textbf{Direktes Streamen von Audio und Video vom embedded System an PC}\\
-Ffmpeg A/V Streaming hatte ein Delay von >2.5s, siehe Testergebnis \textbf{(m)} in Kapitel \ref{RefVergleich}. Der Stream wurde mit ffmpeg erzeugt und an den ffserver auf dem PC geschickt. ffplay, mplayer und vlc wurden ohne Verbesserung des Ergebnisses getestet.\\
-Gstreamer konnte dieses Ergebnis bei weitem übertreffen. A/V Streaming ohne Server war nahezu ohne Verzögerung ca. 0.1s, siehe Testergebnis \textbf{(h)} in Kapitel \ref{RefVergleich}. Gstreamer erfüllte damit die Anforderung und wurde für im Projekt verwendet, um A/V direkt an den Streaming-Server zu senden. \\
-
-\textbf{Aufsetzen eines Webservers im lokalen Netzwerk, Hosting der Webseite}\\
-Als Webserver wurde nginx ausgewählt, um eine Webseite im lokalen Netzwerk zu hosten. Die Demo-Webseiten des Streaming-Servers benötigen noch diverse Anpassungen, um z.B. den Admin/Monitor verwenden zu können. Erst danach steht mit nginx eine vollwertige Entwicklungsumgebung zur Verfügung. Installation und Konfiguration von nginx wird in Kapitel \ref{Refnginx} erklärt. \\
+\textbf{Direktes A/V Streamen vom embedded System > PC}\\
+Versuche mit ffmpeg A/V Streaming wiesen ein Delay von >2.5s zwischen senden und empfangen auf. Die Testergebnisse sind in Tabelle \ref{tbl:beispieltabelle}  Kapitel \ref{RefVergleich} zusammengefasst. Der Stream wurde mit ffmpeg erzeugt und an den ffserver auf dem PC geschickt. Das Ergebnis \textbf{(m)} in Tabelle \ref{tbl:beispieltabelle} stellte das KO Kriterium dar. 2.5 Sekunden waren zuviel, um einen interaktiven Chat zu gestalten. PC seitig konnte daran nichts geändert werden. ffplay, mplayer und vlc wurden ohne Verbesserung des Ergebnisses getestet.\\
+Gstreamer konnte dieses Ergebnis bei weitem übertreffen. A/V Streaming ohne Server war nahezu ohne Verzögerung ca. 0.1s, siehe Testergebnis \textbf{(h)} in Tabelle \ref{tbl:beispieltabelle}, Kapitel \ref{RefVergleich}. Gstreamer erfüllte damit die Anforderung und wurde im weiteren Projekt verwendet, um A/V direkt an den Streaming-Server zu senden.\\
 
 \textbf{Aufsetzen eines Streaming-Servers im lokalen Netzwerk}\\
-Die Auswahl einen OpenSoure Streaming Servers gestaltete sich schwierig. Mit der Anforderung einen A/V Stream im RTP/UDP Format in ein Web natives Format zu konvertieren und der geringen Anzahl veröffentlichter Projekte musste häufig die Dokumentation der Server zu Rate gezogen werden. In die engere Auswahl wurde UV4L und das Janus-Gateway gezogen. Die UV4L Bibliothek erwähnt zwar eine Einsatzmöglichkeit auch ohne Webbrowser. Es konnten jedoch keine Anwendungen gefunden werden, die UV4L zum direkten A/V Streaming verwenden.\\
-Beim Janus-Gateway stand zumindest eine Standard-Konfiguration für RTP zu WebRTC bereit und in Foren werden Probleme nicht korrekter Konfiguration diskutiert. Auch ist das Empfangen von gstreamer RTP-Paketen möglich. Die Installation und Konfiguration des Janus-Gateways ist in Kapitel \ref{RefJanus} beschrieben.\\
+Die Auswahl eines OpenSoure Streaming Servers gestaltete sich schwierig. Die Anforderung einen A/V Stream möglichst Overhead frei, z.B. RTP/UDP Format, in ein Web natives Format zu konvertieren erforderte viel Recherchezeit. Dazu kommt noch, dass veröffentlichte Projekte meistens nicht passend sind und z.B. auf Browser zu Browser Streaming basieren. Alternativ handelt es sich um Streaming-Lösungen, die ganz ohne Browser arbeiten. Die gesetzte Anforderung aus einem eigenen Programm ohne Browser auf eine Webseite zu streamen und wieder zurück, erschwerte den Fortschritt des Projektes. Dazu kam noch, dass zwar Video Streaming generell gut dokumentiert ist, aber in Kombination mit Audio nicht häufig Verwendung findet. Das liegt hauptsächlich daran, dass die meist verkaufte RASPI-CAM kein Mikrofon besitzt und deshalb fast alle Tutorials und Dokumentationen nur Video Streaming beschreiben. Viele Start-Ups werben mit Lösungen, welche die A/V Anforderung im Projekt erfüllen würden. Es scheint ein Bereich unter aktiver Entwicklung zu sein, wie von und zu embedded Systemen A/V gestreamt werden kann.\\
+Schließlich wurden UV4L und das Janus-Gateway in die engere Auswahl gezogen. Die UV4L Bibliothek erwähnt zwar eine Einsatzmöglichkeit auch ohne Webbrowser auf den Klientseite. Es konnte jedoch keine ausreichende Dokumentation gefunden werden, wie UV4L zum direkten A/V Streaming verwendet wird. Beim Janus-Gateway stand zumindest eine Standard-Konfiguration für RTP zu WebRTC bereit und in Foren werden Probleme nicht korrekter Konfiguration diskutiert. Auch ist das Empfangen von gstreamer RTP-Paketen möglich. Die Installation und Konfiguration des Janus-Gateways ist in Kapitel \ref{RefJanus} beschrieben. Das Janus-Gateway wurde im weiteren Projektverlauf verwendet, um 'n' RTP Streams von embedded Systemen zu empfangen und als 'n' WebRTC Streams via http auf eine Webseite weiterzuleiten.\\
 
-\textbf{Direktes Streaming von Audio und Video vom embedded System an Streaming-Server}\\
-Gstreamer Befehle für die Übertragung von A/V vom Raspberry an das Janus-Gateway sind in Kapitel \ref{RefGstrToJanus} aufgelistet.\\
+\textbf{Aufsetzen eines Webservers im lokalen Netzwerk, Hosting der Webseite}\\
+Als Webserver wurde nginx ausgewählt, um eine Webseite im lokalen Netzwerk zu hosten. Die Demo-Webseiten des Streaming-Servers benötigen noch diverse Anpassungen, um z.B. den Admin/Monitor verwenden zu können. Erst danach steht mit nginx eine vollwertige Entwicklungsumgebung zur Verfügung. Installation und Konfiguration von nginx wird in Kapitel \ref{Refnginx} erklärt.\\
 
+\textbf{Direktes Streaming von Audio und Video vom embedded System an den Streaming-Server}\\
+Gstreamer Befehle für die Übertragung von A/V vom Raspberry an das Janus-Gateway sind in Kapitel \ref{RefGstrToJanus} aufgelistet.
 
 \subsection{Webseite zur Anzeige der Videostreams}
-Beschreibung...\\
+Die Janus-Installation enthält bereits Demowebseiten für die Anzeige der WebRTC Streams und Werkzeuge für die Konfiguration von Chaträumen. Mittels einer Debug Admin/Monitor Seite können eingehende Streams, Anzahl der Pakete, IP-Adressen usw. angezeigt werden. Der bereit gestellte Javascript-Code kann verwendet werden, um interaktiv Kamera und Mikrofon des Bedieners auszuwählen. Im Rahmen des Projektes wurde durch Änderung der Demowebseiten eine funktionale Testwebpage gestaltet, um wahlweise die A/V Streams verschiedener emb.Systeme anzeigen zu können.\\
 
-\textbf{Anzeige des konvertierten Outputs des Streaming-Servers auf der Webseite}\\
-blah blah blah\\
+\begin{minipage}{\textwidth}
+    \begin{center}
+        \includegraphics[scale=0.27]{img/janusweb.jpg} 
+    \end{center}
+\end{minipage}
+\begin{center}
+Adaptierte Website zur Anzeige der A/V WebRTC-Streams
+\end{center}
 
-\subsection{Streamen von PC > Server > Anzeige auf embedded Sytem}
-Beschreibung...\\
+\subsection{Streaming: PC > Server > Anzeige auf embedded Sytem}
 
-\textbf{Streamen der PC Webcam an lokalen Streaming-Server}\\
-blah blah blah\\
+
+
+
+gstreamer schitty h264, vp8 und raw not working...
+, ffmpeg best 1.5 sec video / audio!!!\\
+
+\begin{minipage}{\textwidth}
+    \begin{center}
+        \includegraphics[scale=0.5]{img/statusff.jpg} 
+    \end{center}
+\end{minipage}
+\begin{center}
+Status ffserver Webpage zur Anzeige der verbundenen Streams
+\end{center}
+
 
 \textbf{Zurück-Streamen vom Streaming-Server an embedded Hardware und Visualisierung}\\
-blah blah blah\\
+siehe Kapitel \ref{RefBack}
+
 
 \subsection{Online Setup}
 Beschreibung...\\
@@ -72,6 +88,6 @@ Im oberen Bereich ist der gstreamer Befehl mit dem Audio udpsink host...5000 und
 
 \begin{minipage}{\textwidth}
     \begin{center}
-        \includegraphics[scale=0.85]{img/wireshark.png} 
+        \includegraphics[scale=0.7]{img/wireshark.png} 
     \end{center}
 \end{minipage}

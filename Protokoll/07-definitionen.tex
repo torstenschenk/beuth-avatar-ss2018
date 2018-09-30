@@ -2,11 +2,9 @@
 Beschreibung der wichtigsten Codex und Datei-Formate, die während des Projektes zum Einsatz kamen.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{webm \& ogg}
+\subsection{webm}
 \color{red}
 ..
-
-
 
 \textbf{WIKIpedia - rewrite - Zusammenfassen}
 Achtung, kann auch direkt auf einer Website dargestellt werden!\\
@@ -21,8 +19,7 @@ Der bekannteste Codec ist dabei der Audio-Codec Vorbis, welcher oft vereinfachen
 Html5 Snippet von www.w3Schools.com zur Anzeige von webm und ogg.
 \begin{verbatim}
 <video width="320" height="240" controls>
-  <source src="movie.ogg" type="video/webm">
-  <source src="movie.ogg" type="video/ogg">
+  <source src="movie.webm" type="video/webm">
   Your browser does not support the video tag.
 </video> 
 \end{verbatim}
@@ -42,7 +39,7 @@ H.264 ist ein Standard zur Kompression von Videodaten.  \\
 
 
 \section{Vergleich der Streaming-Lösungen und Tests} \label{RefVergleich}
-Die Ergebnisse der Versuche wurden übersichtlich in Tabelle 1 zusammengefasst. Von den Ergebnissen ausgehend, wurde die gstreamer Bibliothek für das Streaming vom emb. System ausgewählt und ffmpeg für das zurückstreamen. Gstreamer schien ungeeignet für das zurückstreamen zu sein, da die CPU Leistung des emb. Systems nicht ausreichte, um die Frames auszupacken. Selbst unkomprimierte RAW Frames konnten nicht die Anforderung erfüllen, siehe gstreamer Kapitel 8.
+Die Ergebnisse der Versuche wurden übersichtlich in Tabelle 1 zusammengefasst. Von den Ergebnissen ausgehend, wurde die gstreamer Bibliothek für das Streaming vom emb. System ausgewählt und ffmpeg für das zurückstreamen. Gstreamer schien ungeeignet für das zurückstreamen zu sein, da die CPU Leistung des emb. Systems nicht ausreichte, um die Frames auszupacken. Selbst unkomprimierte RAW Frames konnten nicht die Anforderung erfüllen, siehe gstreamer Kapitel \ref{RefGstreamer}.
 
 \begin{table}[H]
 \centering

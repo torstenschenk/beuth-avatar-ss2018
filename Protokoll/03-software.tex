@@ -30,11 +30,10 @@ oder über USB Gerätekennung und danach all Höhen und Breiten abfragen.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
 \section{Motion Installation \& Test}
 
-Motion ist ein Programm, das in der Lage ist zu erkennen, wenn ein signifikanter Teil des Kamerabildes sich verändert. Es kann also Bewegung erkennen und einen Warnton übertragen. Es ist ein Kamera Streaming Service, welches verwendet werden kann, um den Videostream einer Webcam an eine IP Adresse zu leiten. Motion kann mit vielen Geräten verwendet werden. Unterstützt werden: V4L2 Webcams (closed source), Video Frame Grabber, Network Kameras via HTTP, RTSP, RTMP, PI Kameramodul, Webcam.\\
-
-Die Installationsanleitung für den Motion Streaming Server auf Raspian Betriebssystem folgt dem Tutorial auf \textit{https://pimylifeup.com/raspberry-pi-webcam-server/} und wurde um eigene Anpassungen erweitert.\\
+Motion ist ein Programm, das in der Lage ist zu erkennen, wenn ein signifikanter Teil des Kamerabildes sich verändert. Es kann also Bewegung erkennen und einen Warnton übertragen. Es ist ein Kamera Streaming Service, welches verwendet werden kann, um den Videostream einer Webcam an eine IP Adresse zu leiten. Motion kann mit vielen Geräten verwendet werden. Unterstützt werden: V4L2 Webcams (closed source), Video Frame Grabber, Network Kameras via HTTP, RTSP, RTMP, PI Kameramodul, Webcam. Die Installationsanleitung für den Motion Streaming Server auf Raspian Betriebssystem folgt dem Tutorial auf \textit{https://pimylifeup.com/raspberry-pi-webcam-server/} und wurde um eigene Anpassungen erweitert.\\
 
 \textbf{Raspian Version pi\_strech\_motion}
 
@@ -68,10 +67,7 @@ Die Installationsanleitung für den Motion Streaming Server auf Raspian Betriebs
 	framerate 100
 	width 640
 	height 480
-	\end{verbatim}
-	
-	\item Konfiguration des Daemons
-	\begin{verbatim}
+
 	sudo vim /etc/default/motion
 	start_motion_daemon=yes
 	\end{verbatim}
@@ -84,7 +80,7 @@ sudo service motion stop
 \end{verbatim}
 Browser zur Anzeige im lokalen Netzwerk (Ip Adresse des Raspberry)\\
 192.168.1.xxx:8081
-
+\end{comment}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{ffmpeg, ffserver, ffplay} \label{RefFFmpeg}
 \textbf{ffmpeg mit alsa auf Raspberry }
@@ -284,52 +280,91 @@ Live-Stream to YouTube (YouTube Account nötig):
   -f flv rtmp://a.rtmp.youtube.com/live2/<stream-key>
 \end{verbatim}
 
-Danach kann über den ffserver auf eine Webpage gestreamt werden:\\
+\subsection{Zurückstreamen ffmpeg PC > ffserver > ffplay emb.System} \label{RefBack}
+1) start server
+\begin{verbatim}
+  ffserver -f ffserver.conf
+\end{verbatim}
+
+2) start camera stream to server
+\begin{verbatim}
+  ffmpeg -re -f video4linux2 -i /dev/video0 -fflags nobuffer -f alsa -i pulse \
+  http://serveraddr:8090/yolandi1.ffm
+\end{verbatim}
+
+3) run receiver on laptop or raspi\\
+viel Delay
+\begin{verbatim}
+  mplayer http://serveraddr:8090/test.webm
+\end{verbatim}
+
+ca 1.3 sec
+\begin{verbatim}
+  ffplay -probesize 32 -sync ext http://serveraddr:8090/test.webm
+  ffplay -fflags nobuffer -probesize 32 -sync ext http://serveraddr:8090/test.webm
+\end{verbatim}
+
+4) Status webpage in browser des Servers
+\begin{verbatim}
+  Status page: http://serveraddr:8090/status.html
+\end{verbatim}
+
 ffserver.config
 \begin{verbatim}
-HTTPPort 9090
-HTTPBindAddress 0.0.0.0
-MaxHTTPConnections 2000
-MaxClients 1000
-MaxBandwidth 100000
-#NoDaemon
-
-<Feed feed1.ffm>
-        File /tmp/feed1.ffm
-        FileMaxSize 200K
-        ACL allow 127.0.0.1
+   HTTPPort 8090
+   HTTPBindAddress 0.0.0.0
+   MaxHTTPConnections 2000
+   MaxClients 1000
+   MaxBandwidth 1000
+##################################################################
+# Definition of the live feeds. Each live feed contains one video
+# and/or audio sequence coming from an ffmpeg encoder or another
+# ffserver.
+<Feed yolandi1.ffm>
+   # maximum size of the feed, where zero means unlimited. Default:
+   # File=/tmp/feed_name.ffm FileMaxSize=5M
+   File ./yolandi1.ffm
+   FileMaxSize 200K
+   ACL allow 127.0.0.1
 </Feed>
+##################################################################
+# Example streams
+<Stream test.webm>             # Output stream URL definition
+   Feed yolandi1.ffm              # Feed from which to receive video
+   Format webm
 
-<Stream test.ogg>
-        Format ogg
-        Feed feed1.ffm
+   # Audio settings
+   AudioCodec vorbis
+   AudioBitRate 64             # Audio bitrate
 
-        VideoCodec libtheora
-        VideoFrameRate 24
-        VideoBitRate 512
-        VideoSize 320x240
-        VideoQMin 1
-        VideoQMax 31
-        VideoGopSize 12
-        PreRoll 0
-        AVOptionVideo flags +global_header
-        Noaudio
+   # Video settings
+   VideoCodec libvpx
+   VideoSize 320x256           # Video resolution
+   VideoFrameRate 15           # Video FPS
+   AVOptionVideo flags +global_header  # Parameters passed to encoder
+                                       # (same as ffmpeg command-line parameters)
+   AVOptionVideo cpu-used 0
+   AVOptionVideo qmin 10
+   AVOptionVideo qmax 42
+   AVOptionVideo quality good
+   AVOptionAudio flags +global_header
+   PreRoll 0
+   StartSendOnKey
+   VideoBitRate 100            # Video bitrate
+</Stream>
+##################################################################
+# Special streams
+# Server status
+<Stream status.html>
+   Format status  
+   # Only allow local people to get the status
+   ACL allow localhost
+   ACL allow 192.168.0.0 192.168.255.255
+   #FaviconURL http://pond1.gladstonefamily.net:8080/favicon.ico
 </Stream>
 
-<Stream stat.html>
-        Format status
-        # Only allow local people to get the status
-        ACL allow localhost
-        ACL allow 192.168.0.0 192.168.255.255
-</Stream>                         
+# Redirect index.html to the appropriate site
+<Redirect index.html>
+  URL http://www.ffmpeg.org/
+</Redirect>                
 \end{verbatim}
-
-Start ffserver und ffmpeg:
-\begin{verbatim}
-  ffserver -f ffserver.config
-  ffmpeg -f v4l2 -i /dev/video0 -vcodec libtheora http://localhost:9090/feed1.ffm
-\end{verbatim}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
