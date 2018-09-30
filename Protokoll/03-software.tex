@@ -83,16 +83,8 @@ Browser zur Anzeige im lokalen Netzwerk (Ip Adresse des Raspberry)\\
 \end{comment}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{ffmpeg, ffserver, ffplay} \label{RefFFmpeg}
-\textbf{ffmpeg mit alsa auf Raspberry }
-
-Um Audio mit ffmpeg zu verwenden, wird häufig \textbf{alsa} verwendet. Die ffmpeg Pakete vom APT-Paketmanager (arm-hf) enthalten keinen Support für alsa, d.h. sie wurden nicht mit der Abhängigkeit zu alsa kompiliert.
-   
-\color{red}
-REWORK in GERMAN:\\
-No, unfortunately not. You must recompile ffmpeg to add enable additional libraries. Below is the script I build to compile ffmpeg with alsa, fdk-aac, and libx264 support. It will install ffmpeg in your home folder inside a "ffmpeg" folder, so you'll need to call it specifically from there unless you add it to your path. I recommend uninstalling your current ffmpeg before using my script.
-
-Btw, I am able to stream directly to YouTube now without any issues. I use an external USB sound card and the PiCam v2 and stream a 1920x1080@25fps video stream with a 192kbps stereo audio stream mixed in. It works great!
-\color{black}
+\textbf{ffmpeg mit alsa auf Raspberry}\\
+Die ffmpeg Pakete für (arm-hf), die über den Paketmanager installiert werden können, sind ohne \textbf{alsa} Abhängigkeit kompiliert worden. ffmpeg verwendet zum Audiostreaming jedoch häufig alsa. Bei Verwendung einer RASPI-cam wird alsa nicht benötigt, so dass die alsa Unterstützung bei den meisten Anwendung nicht benötigt wird. Für das Streaming Projekt musste deshalb ffmpeg aus den Quellen kompiliert werden. Die Version von ffmpeg 4 musste auf 3.4 herunter gesetzt werden, da ffplay und ffserver in Version 4 nicht mehr enthalten sind. ffserver und ffplay sind ideal, um im lokalen Netzwerk Streaming Pipelines zu testen. ffserver ermöglicht es eine Status html Webseite zu generieren, die fps, verbundene Klienten und vieles mehr anzeigt.\\ 
 
 \textbf{Installation von FFmpeg aus Source-Code}
 Wichtige Info: ffserver wurde beim Upgrade auf ffmpeg Version 4.0 gelöscht. Letzte Version mit ffserver ist 3.4. Daher git checkout 3.4! Wenn ffplay mitkompiliert werden soll muss zuerst sdl installiert werden:

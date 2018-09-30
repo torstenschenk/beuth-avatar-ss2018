@@ -37,11 +37,9 @@ Ein Gstreamer Befehl ist aus einer Kette von Plugins aufgebaut. Die Verkettung d
 \item rtmpsink – stream result over RTMP, specify host=<IP of the target server> and port=<number>.
 \end{itemize}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\color{red}
-\textbf{Kodierungselemente}
-Encoding a raw data stream and decoding encoded data into raw data is a big part of using gstreamer and dealing with media in general. Audio data can be encoded to various formats such as MP3, AAC, Vorbis and Opus. Video can be encoded among others as JPEG 2000, H.264, H.265, MPEG-2, VP8, VP9 and Theora. Gstreamer offers the possibilities to encode/decode in these formats through is bundle of plugins. These plugin bundles are the base, good, bad and ugly plugins.\\
-\color{black}
+\textbf{Kodierungselemente}\\
+Die gstreamer Bibliothek umfasst Elemente um Streams zu komprimieren. Sie sind mit dem Kürzel 'enc' versehen, z.B. vorbis\textbf{enc}. Die Elemente zum Dekodieren eines Datenstroms verwenden dann das Kürzel 'dec' um die Daten zu dekomprimieren, z.B. vorbis\textbf{dec}.\\
+
 \textbf{Audio}
 \begin{itemize}
 \item mp3 – lamemp3enc, avenc\_mp3 | mad, mpg123audiodec, avdec\_mp3; 
@@ -61,30 +59,11 @@ Encoding a raw data stream and decoding encoded data into raw data is a big part
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\color{red}
-\textbf{Möglichkeiten oder ‘caps’ Elemente}
 
-Siehe web tutorial, sehr gute Beschreibung,,, wo man die receiver caps herbekommt....\\
-
-Capabilities (short: caps) describe the type of data that is streamed between two pads (elements), or the one that a pad (template) supports. Capsfilters or \textbf{caps} do not modify data as such, but can enforce limitations on the data format. They ensure compatibility between elements. If for example a media stream is available in several formats, they can specify just one which is understandable by the next element in the pipeline. Capabilities can be very complex and specify all types of characteristics although that is often not required. Most often we should specify the type of encoding of the stream we receive or send.\\
-
-Beispiele\\
-Legt kein Encoding für das Video fest \textbf{RAW} und bestimmt die Breite x Höhe einer Framegröße:
-\begin{verbatim}
-  ! video/x-raw, width=640, height=480 !
-\end{verbatim}
-Legt für das Video den Pakettyp auf RTP und das Encoding auf VP8 fest.
-\begin{verbatim}
-  ! application/x-rtp, encoding-name=VP8 !
-\end{verbatim}
-
-Weitere Bestandteile der Pipeline
+\textbf{Weitere Bestandteile der Pipeline}
 \begin{itemize}
-\item \textbf{Muxers/Demuxers} – These elements encapsulate (pair) video and audio in a common container. Common formats are mp4, webm, ogg, mov.
-E.g.:  mp4mux/qtdemux, webmmux/matroskademux.
-\item \textbf{Payers/Depayers} – These elements prepare (payload) data prior and after it is transported over the Internet.
-E.g.: rptvp8pay/rtpvp8depay,  rtph264/rtph264depay \textbf{*** hier raw...***}
-\item \textbf{Converters} – These elements perform data manipulations like rotation, color change, modulation and cropping.
+\item \textbf{Payers/Depayers} – Diese Elemente bereiten die (payload) Datapakete vor und holen die Daten nach dem Transport durchs Netzwerk wieder heraus. E.g.: rptvp8pay/rtpvp8depay, \\ rtph264/rtph264depay
+\item \textbf{Konvertierer} – Diese Elemente können verwendet werden, um Manipulationen, wie z.B. Rotation, Farbraumtransformation, Skalierung auszuführen.
 E.g.: audioconvert, audioresample, videoconvert, videoscale.
 \end{itemize}
 \color{black}
@@ -286,7 +265,8 @@ Nun können die  Janus Beispiel html Dateien geladen werden.\\
 http://192.168.178.25/demos/\\
 
 Der Admin Monitor ist nur nach Eingabe eine Passwort verfügbar...\\
-Entweder das Passwort aus /opt/janus/etc/janus/janus.cfg verwenden (admin\_secret = janusoverlord) oder einfach wie folgt anpassen:
+Entweder das Passwort aus /opt/janus/etc/janus/janus.cfg verwenden \\
+(admin\_secret = janusoverlord) oder einfach wie folgt anpassen:
 \begin{verbatim}
 /usr/share/nginx/html/demos/admin.js
 line 14

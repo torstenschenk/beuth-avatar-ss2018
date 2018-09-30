@@ -10,8 +10,8 @@ Um Codeabschnitte besser von Beschreibungen unterscheiden zu können, wurde eine
 Das erklärte Ziel der pi4\_robotics GmbH Berlin ist es humanoide Roboter weiter zu entwickeln. 
 Diese können bereits in unterschiedlichen Branchen eingesetzt werden. Im Werbeblatt 
 des Workerbot4 (siehe Anhang, Kapitel \ref{RefAnhang}) werden die Basisfähigkeiten des Jolandi Workerbot beschrieben.  \\
-Bisher ist das Anlernen neuer Tätigkeiten und die Bedienung nur über eine PC-Schnittstelle möglich, doch das soll sich ändern. Es ist geplant Spracherkennung und visuelle Wahrnehmung 
-zu integrieren. Um mit dem Roboter wie mit einem Menschen kommunizieren zu können. Auch soll 
+Bisher ist das Anlernen neuer Tätigkeiten und die Bedienung nur über eine PC-Schnittstelle möglich. Doch das soll sich ändern. Geplant ist Spracherkennung und visuelle Wahrnehmung 
+zu integrieren, um mit dem Roboter wie mit einem Menschen kommunizieren zu können. Auch soll 
 ein Avatar Modus implementiert werden, bei dem der User in die Rolle des Roboters schlüpft 
 und per Teleoperation den Roboter bewegt, hört was der Roboter hört und mit den Augen des Roboters sieht. \\
 \begin{minipage}{\textwidth}
@@ -42,7 +42,7 @@ Für den Bediener soll ein \textbf{Web-Template} erstellt werden. Dort kann dies
 (<0.2sek), damit der User möglichst schnell reagieren kann. Bildübertragung zum eingebetteten System darf einen leichten Zeitversatz haben, da dort nur das Gesicht des Bedieners angezeigt wird, aber keine weiteren Handlungen davon abhängen.\\
 Das gesamte Streaming soll über das Internet erfolgen. Dabei ist der Datentransfer auch aus 
 fremden WLAN Netzen heraus zu realisieren. Fremd im Sinne, dass die dazwischen liegenden Router und Ports nicht konfiguriert werden können. Die IP Adressen der Roboter sind damit quasi unbekannt, d.h. dynamisch wechselnd oder/und nicht vom Internet aus sichtbar, d.h. es ist nicht möglich direkt vom Sender zum Empfänger zu streamen.\\
-Eine weitere Anforderung war den Datentransport möglichst Effizient zu gestalten. Für den Upload ins Internet sollte ein Transportprotokoll mit geringem Overhead gewählt werden und für das Streaming auf die Webseite ein natives Format, welches von aktuellen Browsern unterstützt wird. Die Visualisierung sollte in Html5 \& Javascript ohne Browser-Plugins, Flash o.ä. erfolgen. Für die Realisierung musste also eine Möglichkeit gefunden werden, das Upload Format zu konvertieren und die Webseite mit einem Audio- und Videostream zu versorgen. Eine Streaminglösung über das Web erfordert drei Basiskomponenten um die Aufgabe zu erfüllen. Einen Streaming Server, einen Sender und einen Empfänger.
+Eine weitere Anforderung war, den Datentransport möglichst Effizient zu gestalten. Für den Upload ins Internet sollte ein Transportprotokoll mit geringem Overhead gewählt werden und für das Streaming auf die Webseite ein natives Format, welches von aktuellen Browsern unterstützt wird. Die Visualisierung sollte in Html5 \& Javascript ohne Browser-Plugins, Flash o.ä. erfolgen. Für die Realisierung musste also eine Möglichkeit gefunden werden, das Upload Format zu konvertieren und die Webseite mit einem Audio- und Videostream zu versorgen. Eine Streaminglösung über das Web erfordert drei Basiskomponenten um die Aufgabe zu erfüllen. Einen Streaming Server, einen Sender und einen Empfänger.
 
 \textbf{Streaming-Server:} 
 Ist die Hauptkomponente, die Audio- und Videoinhalte von den Sendern an die Empfänger weiterleitet. Gleichzeitig kann auch die Konvertierung von einem Format oder Codec in ein anderes erfolgen.

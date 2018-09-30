@@ -23,7 +23,7 @@ Danach ist es möglich über ssh einzuloggen.
   pwd: xxxxxxxxxx (pwd vom Provider)
 \end{verbatim}
 
-\textbf{Raspberry Touchscreen Anzeige per Software Drehen}
+\textbf{Raspberry Touchscreen Anzeige per Software drehen}
 Wenn das Raspberry 7\grqq{} Display ins Gehäuse eingebaut wird ist die 
 Visualisierung des Desktops 180 Grad verdreht. Es müssen Bildschirmanzeige 
 und Toucherkennung gedreht werden. Softwaretechnisch sind dies zwei verschiedene 
@@ -37,9 +37,7 @@ bitte in /boot/config.txt eintragen:
 \end{verbatim}
 
 \textbf{Andere OP}\\
-Hier wird mittels des lcd\_display Befehls nur der Touchbildschrim 
-gedreht. Es kann xrandr verwendet werden um zusätzlich die visuelle Darstellung zu 
-um 180 Grad zu drehen. Display Infos \& drehen:
+Hier wird mittels des lcd\_display Befehls nur der Touchbildschirm  gedreht. Es kann xrandr verwendet werden, um zusätzlich die visuelle Darstellung um 180 Grad zu drehen. Display Infos \& drehen:
 \begin{verbatim}
   xrandr -q
   xrandr --output HDMI-1 --rotate inverted
@@ -47,7 +45,7 @@ um 180 Grad zu drehen. Display Infos \& drehen:
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Strato Web Server}
+\subsection{Strato Web Server} \label{RefStrato}
 \textbf{Login via ssh}
 \begin{verbatim}
   ssh -X root@85.214.211.169
@@ -105,13 +103,10 @@ Hochladen aus lokaler Konsole: PC -> remote PC (raspberry)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Audio Lautsprecher} \label{RefLautsprecher}
-%Um Audio auf den Headphone Jack umzuleiten (default ist HDMI) zuerst pulseaudio deinstallieren.\\
-%sudo apt remove pulseaudio\\
-
 Die richtige Zuordnung setzen, sonst gibt es nur Sound vom 
-abspielen von Audiodateien aber nicht im Browser. Bitte im 
+Abspielen bei Audiodateien, aber nicht im Browser. Bitte im 
 Browser, z.B. mit YouTube. '1' steht für local audio jack über 
-den den Lautsprecher angeschlossen ist:
+den der Lautsprecher angeschlossen ist:
 \begin{verbatim}
   amixer cset numid=3 1
   amixer cset numid=2 1
@@ -124,7 +119,7 @@ den den Lautsprecher angeschlossen ist:
   aplay /usr/share/scratch/Media/Sounds/Vocals/Singer1.wav
 \end{verbatim}
 Facebook Video Call: OK (schlechter Sound)\\
-Musikvidoes auf YoutTube: OK (guter Sound)\\
+Musikvidoes auf YouTube: OK (guter Sound)\\
 
 Kommandozeile, um alle Audiogeräte anzuzeigen:\\
 pacmd list-sources
@@ -156,7 +151,7 @@ Interessant ist der letzte Eintrag plughw, diesen kann man direkt für
 ffmpeg verwenden, z.B.:
 \begin{verbatim}
   webcam: ...plughw:CARD=C920,DEV=0 ...
-  usb-micro: arecord -D plughw:CARD=Device,DEV=0 -f cd test.wav
+  usb-micro: arecord -D plughw:CARD=C920,DEV=0 -f cd test.wav
 \end{verbatim}
 
 Wenn beim Testen mit ffmpeg der Fehler: 
